@@ -715,8 +715,22 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
+// =========== FIREBASE ===========
+firebase.initializeApp({
+  apiKey: "AIzaSyASDTvELKcDDMEM7aV3rtlPYn-4jOfIXcQ",
+  authDomain: "luxvisual-nc.firebaseapp.com",
+  projectId: "luxvisual-nc",
+  storageBucket: "luxvisual-nc.firebasestorage.app",
+  messagingSenderId: "506331560097",
+  appId: "1:506331560097:web:72bcca453bdc5e20ef18e0"
+});
+const db = firebase.firestore();
+const ncCollection = db.collection('nc_pao');
+
 // =========== CONFIG ===========
 const OPERATORS = ['Paul', 'Manon', 'Christopher', 'Félix', 'Invité'];
 
@@ -738,9 +752,10 @@ const NC_TYPES = [
 ];
 
 const KEY = 'lv_nc_pao_v4';
-let ncData = JSON.parse(localStorage.getItem(KEY) || '[]');
+let ncData = [];
 let currentUser = localStorage.getItem('lv_nc_user') || '';
 let selTypes = [], selCommercial = '', selTimeLost = null;
+let firestoreReady = false;
 
 // =========== LOGIN ===========
 function initLogin() {
@@ -770,6 +785,21 @@ function showApp() {
 document.addEventListener('DOMContentLoaded', () => {
   initLogin();
   if (currentUser) showApp();
+
+  // Firestore real-time listener
+  ncCollection.orderBy('date', 'desc').onSnapshot(snapshot => {
+    ncData = snapshot.docs.map(doc => ({ ...doc.data(), _docId: doc.id }));
+    firestoreReady = true;
+    updateStats();
+    updateRef();
+    // Refresh visible views
+    const activeView = document.querySelector('.view.active');
+    if (activeView && activeView.id === 'view-list') renderList();
+    if (activeView && activeView.id === 'view-stats') renderStats();
+  }, err => {
+    console.error('Firestore error:', err);
+    toast('Erreur de connexion à la base', true);
+  });
 });
 
 // =========== GRIDS ===========
@@ -859,10 +889,15 @@ function saveNC() {
     client, job, type: types.join(' + '), types: types,
     commercial: selCommercial, timeLost: selTimeLost || 0, remark, operator: currentUser
   };
-  ncData.unshift(nc); save(); resetForm(); updateRef(); updateStats();
-  toast(`${nc.ref} enregistrée`);
+  // Write to Firestore
+  ncCollection.add(nc).then(() => {
+    resetForm(); updateRef();
+    toast(`${nc.ref} enregistrée`);
+  }).catch(err => {
+    console.error(err);
+    toast('Erreur lors de l\'enregistrement', true);
+  });
 }
-function save() { localStorage.setItem(KEY, JSON.stringify(ncData)); }
 function resetForm() {
   document.getElementById('f-client').value = '';
   document.getElementById('f-job').value = '';
@@ -936,10 +971,15 @@ function showDetail(id) {
 }
 function deleteNC(id) {
   if (!confirm('Supprimer cette NC ?')) return;
-  ncData = ncData.filter(x=>x.id!==id);
-  save(); updateStats(); renderList();
-  document.getElementById('modal').classList.remove('show');
-  toast('NC supprimée');
+  const nc = ncData.find(x=>x.id===id);
+  if (!nc || !nc._docId) return;
+  ncCollection.doc(nc._docId).delete().then(() => {
+    document.getElementById('modal').classList.remove('show');
+    toast('NC supprimée');
+  }).catch(err => {
+    console.error(err);
+    toast('Erreur lors de la suppression', true);
+  });
 }
 
 // =========== STATS ===========
