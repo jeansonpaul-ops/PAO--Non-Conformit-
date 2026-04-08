@@ -92,7 +92,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .nc-type-btn.selected[data-i="6"]{background:#c026d3}
 .nc-type-btn.selected[data-i="7"]{background:#b45309}
 .nc-type-btn.selected[data-i="8"]{background:#64748b}
-.nc-type-btn.centered{grid-column:1/-1;max-width:50%;justify-self:center}
+.nc-type-btn.centered{grid-column:1/-1;max-width:calc(50% - 4px);justify-self:center}
 
 .other-field{margin-bottom:20px;overflow:hidden;max-height:0;transition:max-height .3s,margin .3s}
 .other-field.visible{max-height:80px;margin-top:8px;margin-bottom:20px}
@@ -100,7 +100,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .other-field input:focus{border-color:var(--accent)}
 
 /* TIME LOST */
-.time-row{display:flex;gap:8px;margin-bottom:8px}
+.time-row{display:flex;gap:8px;margin-bottom:20px;align-items:center}
 .time-btn{flex:1;padding:11px 6px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--surface);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;font-family:'Outfit',sans-serif;box-shadow:var(--shadow-sm)}
 .time-btn:hover{opacity:.88}.time-btn:active{transform:scale(.97)}
 .time-btn.selected{color:#fff;border-color:transparent;box-shadow:var(--shadow)}
@@ -109,10 +109,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .time-btn.selected[data-t="10"]{background:#3b82f6}
 .time-btn.selected[data-t="15"]{background:#a855f7}
 .time-btn.selected[data-t="30"]{background:#f97316}
-.time-custom-row{display:flex;gap:8px;align-items:center;margin-bottom:20px}
-.time-custom-row input{width:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;outline:none;text-align:center;box-shadow:var(--shadow-sm)}
-.time-custom-row input:focus{border-color:var(--accent)}
-.time-custom-row span{font-size:13px;color:var(--text2)}
+.time-custom{display:flex;gap:5px;align-items:center;flex:1.2}
+.time-custom input{width:55px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;text-align:center;box-shadow:var(--shadow-sm)}
+.time-custom input:focus{border-color:var(--accent)}
+.time-custom span{font-size:12px;color:var(--text3);white-space:nowrap}
 
 /* BUTTONS */
 .form-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;padding-top:18px;border-top:1px solid var(--border)}
@@ -221,13 +221,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="other-field" id="otherField"><input type="text" id="f-other" placeholder="Précisez le type de non-conformité…"></div>
       <div class="section-label" style="margin-top:8px">Temps perdu <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(facultatif)</span></div>
       <div class="time-row">
-        <div class="time-btn" data-t="0" onclick="pickTime(this,0)">0 min</div>
-        <div class="time-btn" data-t="5" onclick="pickTime(this,5)">5 min</div>
-        <div class="time-btn" data-t="10" onclick="pickTime(this,10)">10 min</div>
-        <div class="time-btn" data-t="15" onclick="pickTime(this,15)">15 min</div>
-        <div class="time-btn" data-t="30" onclick="pickTime(this,30)">30 min</div>
+        <div class="time-btn" data-t="0" onclick="pickTime(this,0)">0</div>
+        <div class="time-btn" data-t="5" onclick="pickTime(this,5)">5</div>
+        <div class="time-btn" data-t="10" onclick="pickTime(this,10)">10</div>
+        <div class="time-btn" data-t="15" onclick="pickTime(this,15)">15</div>
+        <div class="time-btn" data-t="30" onclick="pickTime(this,30)">30</div>
+        <div class="time-custom"><span>ou</span><input type="number" id="f-time-custom" min="0" placeholder="—" oninput="onCustomTime()"><span>min</span></div>
       </div>
-      <div class="time-custom-row"><span>ou</span><input type="number" id="f-time-custom" min="0" placeholder="—" oninput="onCustomTime()"><span>min</span></div>
       <div class="field" style="margin-bottom:14px"><label>Remarque (optionnel)</label><textarea id="f-remark" placeholder="Détails supplémentaires…"></textarea></div>
       <div class="form-footer"><button class="btn btn-ghost" onclick="resetForm()">Effacer</button><button class="btn btn-primary" onclick="saveNC()">Enregistrer</button></div>
     </div>
