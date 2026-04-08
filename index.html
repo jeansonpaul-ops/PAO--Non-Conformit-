@@ -103,6 +103,75 @@
   .op-btn:active { transform: scale(0.97); }
   .op-btn.full-width { grid-column: 1 / -1; }
 
+  /* Password step */
+  .login-pass {
+    display: none;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .login-pass.show { display: block; }
+  .login-pass p {
+    font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--text);
+  }
+  .login-pass-row {
+    display: flex; gap: 8px;
+  }
+  .login-pass input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px; outline: none;
+  }
+  .login-pass input:focus { border-color: var(--accent); }
+  .login-pass button {
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer;
+  }
+  .login-error {
+    color: var(--danger);
+    font-size: 12px; font-weight: 600;
+    margin-top: 8px;
+  }
+  .login-back {
+    background: none; border: none;
+    color: var(--text3); font-size: 12px;
+    cursor: pointer; margin-top: 10px;
+    font-family: 'Outfit', sans-serif;
+    text-decoration: underline;
+  }
+
+  /* Custom time input */
+  .time-custom-row {
+    display: flex; gap: 8px; align-items: center;
+    margin-top: -12px; margin-bottom: 20px;
+  }
+  .time-custom-row input {
+    width: 80px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 10px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; outline: none;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .time-custom-row input:focus { border-color: var(--accent); }
+  .time-custom-row span {
+    font-size: 13px; color: var(--text2);
+  }
+
   /* ===================== APP ===================== */
   .app { display: none; }
   .app.visible { display: block; }
@@ -306,15 +375,15 @@
   .nc-type-btn.selected .check-mark { display: block; }
   .nc-type-btn.selected { color: #fff; border-color: transparent; box-shadow: var(--shadow); }
   .nc-type-btn.selected .nc-icon { filter: brightness(10); }
-  .nc-type-btn.selected[data-i="0"] { background: #dc2626; }
-  .nc-type-btn.selected[data-i="1"] { background: #ea580c; }
-  .nc-type-btn.selected[data-i="2"] { background: #ca8a04; }
-  .nc-type-btn.selected[data-i="3"] { background: #c026d3; }
-  .nc-type-btn.selected[data-i="4"] { background: #be123c; }
-  .nc-type-btn.selected[data-i="5"] { background: #b45309; }
-  .nc-type-btn.selected[data-i="6"] { background: #9333ea; }
-  .nc-type-btn.selected[data-i="7"] { background: #e11d48; }
-  .nc-type-btn.selected[data-i="8"] { background: #78716c; }
+  .nc-type-btn.selected[data-i="0"] { background: #dc2626; }  /* rouge vif */
+  .nc-type-btn.selected[data-i="1"] { background: #2563eb; }  /* bleu royal */
+  .nc-type-btn.selected[data-i="2"] { background: #059669; }  /* émeraude */
+  .nc-type-btn.selected[data-i="3"] { background: #9333ea; }  /* violet */
+  .nc-type-btn.selected[data-i="4"] { background: #ea580c; }  /* orange brûlé */
+  .nc-type-btn.selected[data-i="5"] { background: #0891b2; }  /* cyan */
+  .nc-type-btn.selected[data-i="6"] { background: #c026d3; }  /* fuchsia */
+  .nc-type-btn.selected[data-i="7"] { background: #b45309; }  /* ambre foncé */
+  .nc-type-btn.selected[data-i="8"] { background: #64748b; }  /* gris ardoise */
 
   .other-field {
     margin-bottom: 20px;
@@ -436,9 +505,9 @@
   }
 
   /* Time lost buttons */
-  .time-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .time-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
   .time-btn {
-    flex: 1; padding: 11px 8px;
+    flex: 1; min-width: 60px; padding: 11px 6px;
     border-radius: var(--radius-sm);
     border: 2px solid var(--border);
     background: var(--surface);
@@ -452,10 +521,12 @@
   .time-btn:hover { opacity: 0.88; }
   .time-btn:active { transform: scale(0.97); }
   .time-btn.selected { color: #fff; border-color: transparent; box-shadow: var(--shadow); }
-  .time-btn.selected[data-t="0"] { background: #6b7280; }
-  .time-btn.selected[data-t="15"] { background: #ca8a04; }
-  .time-btn.selected[data-t="30"] { background: #ea580c; }
-  .time-btn.selected[data-t="60"] { background: #dc2626; }
+  .time-btn.selected[data-t="0"] { background: #94a3b8; }
+  .time-btn.selected[data-t="5"] { background: #22c55e; }
+  .time-btn.selected[data-t="10"] { background: #3b82f6; }
+  .time-btn.selected[data-t="15"] { background: #a855f7; }
+  .time-btn.selected[data-t="30"] { background: #f97316; }
+  .time-btn.selected[data-t="60"] { background: #ef4444; }
 
   .empty-state { text-align: center; padding: 50px 20px; color: var(--text2); }
   .empty-state .e-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
@@ -618,6 +689,15 @@
   <div class="login-box">
     <h2>Qui êtes-vous ?</h2>
     <div class="operator-grid" id="operatorGrid"></div>
+    <div class="login-pass" id="loginPass">
+      <p id="loginPassUser"></p>
+      <div class="login-pass-row">
+        <input type="password" id="loginPassInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')submitPassword()">
+        <button onclick="submitPassword()">OK</button>
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button class="login-back" onclick="backToUsers()">← Changer d'utilisateur</button>
+    </div>
   </div>
 </div>
 
@@ -670,9 +750,16 @@
       <div class="section-label" style="margin-top:8px">Temps perdu <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(facultatif)</span></div>
       <div class="time-row">
         <div class="time-btn" data-t="0" onclick="pickTime(this,0)">0 min</div>
+        <div class="time-btn" data-t="5" onclick="pickTime(this,5)">5 min</div>
+        <div class="time-btn" data-t="10" onclick="pickTime(this,10)">10 min</div>
         <div class="time-btn" data-t="15" onclick="pickTime(this,15)">15 min</div>
         <div class="time-btn" data-t="30" onclick="pickTime(this,30)">30 min</div>
-        <div class="time-btn" data-t="60" onclick="pickTime(this,60)">1 heure</div>
+        <div class="time-btn" data-t="60" onclick="pickTime(this,60)">1h</div>
+      </div>
+      <div class="time-custom-row">
+        <span>ou</span>
+        <input type="number" id="f-time-custom" min="0" placeholder="—" oninput="onCustomTime()">
+        <span>min</span>
       </div>
 
       <div class="field" style="margin-bottom:14px">
@@ -732,7 +819,13 @@ const db = firebase.firestore();
 const ncCollection = db.collection('nc_pao');
 
 // =========== CONFIG ===========
-const OPERATORS = ['Paul', 'Manon', 'Christopher', 'Félix', 'Invité'];
+const OPERATORS = [
+  { name: 'Paul', pass: 'paul2026' },
+  { name: 'Manon', pass: 'manon2026' },
+  { name: 'Christopher', pass: 'chris2026' },
+  { name: 'Félix', pass: 'felix2026' },
+  { name: 'Invité', pass: 'invité' },
+];
 
 const COMMERCIAUX = [
   'Antoine Dupraz', 'Nicolas Haussmann', 'Christophe Dos Santos',
@@ -758,16 +851,40 @@ let selTypes = [], selCommercial = '', selTimeLost = null;
 let firestoreReady = false;
 
 // =========== LOGIN ===========
+let pendingLoginIdx = null;
+
 function initLogin() {
   document.getElementById('operatorGrid').innerHTML = OPERATORS.map((op, i) => {
-    const cls = op === 'Invité' ? 'op-btn full-width' : 'op-btn';
-    return `<button class="${cls}" onclick="login(${i})">${op}</button>`;
+    const cls = op.name === 'Invité' ? 'op-btn full-width' : 'op-btn';
+    return `<button class="${cls}" onclick="selectUser(${i})">${op.name}</button>`;
   }).join('');
 }
-function login(idx) {
-  currentUser = typeof idx === 'number' ? OPERATORS[idx] : idx;
-  localStorage.setItem('lv_nc_user', currentUser);
-  showApp();
+function selectUser(idx) {
+  pendingLoginIdx = idx;
+  document.getElementById('operatorGrid').style.display = 'none';
+  document.getElementById('loginPass').classList.add('show');
+  document.getElementById('loginPassUser').textContent = OPERATORS[idx].name;
+  document.getElementById('loginPassInput').value = '';
+  document.getElementById('loginError').textContent = '';
+  setTimeout(() => document.getElementById('loginPassInput').focus(), 100);
+}
+function submitPassword() {
+  const input = document.getElementById('loginPassInput').value;
+  if (input === OPERATORS[pendingLoginIdx].pass) {
+    currentUser = OPERATORS[pendingLoginIdx].name;
+    localStorage.setItem('lv_nc_user', currentUser);
+    backToUsers();
+    showApp();
+  } else {
+    document.getElementById('loginError').textContent = 'Mot de passe incorrect';
+    document.getElementById('loginPassInput').value = '';
+    document.getElementById('loginPassInput').focus();
+  }
+}
+function backToUsers() {
+  pendingLoginIdx = null;
+  document.getElementById('operatorGrid').style.display = 'grid';
+  document.getElementById('loginPass').classList.remove('show');
 }
 function logout() {
   currentUser = '';
@@ -843,6 +960,14 @@ function pickTime(el, val) {
   document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   selTimeLost = val;
+  document.getElementById('f-time-custom').value = '';
+}
+function onCustomTime() {
+  const v = parseInt(document.getElementById('f-time-custom').value);
+  if (!isNaN(v) && v >= 0) {
+    selTimeLost = v;
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+  }
 }
 
 // =========== REF ===========
@@ -884,10 +1009,14 @@ function saveNC() {
   if (!client || types.length === 0 || !selCommercial) {
     toast('Remplir : client, commercial et type(s)', true); return;
   }
+  // Read custom time if field has value
+  const customTime = parseInt(document.getElementById('f-time-custom').value);
+  const timeLost = (!isNaN(customTime) && customTime >= 0) ? customTime : (selTimeLost || 0);
+
   const nc = {
     id: Date.now(), ref: generateRef(), date: new Date().toISOString(),
     client, job, type: types.join(' + '), types: types,
-    commercial: selCommercial, timeLost: selTimeLost || 0, remark, operator: currentUser
+    commercial: selCommercial, timeLost: timeLost, remark, operator: currentUser
   };
   // Write to Firestore
   ncCollection.add(nc).then(() => {
@@ -903,6 +1032,7 @@ function resetForm() {
   document.getElementById('f-job').value = '';
   document.getElementById('f-remark').value = '';
   document.getElementById('f-other').value = '';
+  document.getElementById('f-time-custom').value = '';
   document.getElementById('otherField').classList.remove('visible');
   selTypes = []; selCommercial = ''; selTimeLost = null;
   document.querySelectorAll('.nc-type-btn,.com-btn,.time-btn').forEach(b => b.classList.remove('selected'));
