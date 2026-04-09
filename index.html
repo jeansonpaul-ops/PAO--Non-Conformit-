@@ -91,7 +91,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .nc-type-btn.selected[data-i="6"]{background:#c026d3}
 .nc-type-btn.selected[data-i="7"]{background:#b45309}
 .nc-type-btn.selected[data-i="8"]{background:#0d9488}
-.nc-type-btn.selected[data-i="9"]{background:#64748b}
+.nc-type-btn.selected[data-i="9"]{background:#be185d}
+.nc-type-btn.selected[data-i="10"]{background:#64748b}
 
 .other-field{margin-bottom:20px;overflow:hidden;max-height:0;transition:max-height .3s,margin .3s}
 .other-field.visible{max-height:80px;margin-top:8px;margin-bottom:20px}
@@ -122,6 +123,18 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .btn-export{background:var(--blue-light);color:var(--blue);border:1px solid rgba(46,134,222,.2)}.btn-export:hover{background:rgba(46,134,222,.15)}
 .btn-danger-o{background:var(--danger-light);color:var(--danger);border:1px solid rgba(231,76,60,.2)}
 .btn-pdf{background:#fdecea;color:#c0392b;border:1px solid rgba(192,57,43,.2)}.btn-pdf:hover{background:rgba(192,57,43,.12)}
+.btn-edit{background:var(--blue-light);color:var(--blue);border:1px solid rgba(46,134,222,.2)}.btn-edit:hover{background:rgba(46,134,222,.15)}
+
+/* Edit mode in modal */
+.edit-field{display:flex;flex-direction:column;gap:4px;padding:8px 0;border-bottom:1px solid var(--border)}
+.edit-field label{font-size:11px;font-weight:600;color:var(--text2);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.4px}
+.edit-field input,.edit-field textarea,.edit-field select{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;width:100%}
+.edit-field input:focus,.edit-field textarea:focus,.edit-field select:focus{border-color:var(--accent)}
+.edit-field textarea{resize:vertical;min-height:50px}
+.edit-types-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.edit-type-chip{padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Outfit',sans-serif}
+.edit-type-chip:hover{opacity:.85}
+.edit-type-chip.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* LIST */
 .list-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap}
@@ -258,7 +271,7 @@ const db=firebase.firestore(),ncCollection=db.collection('nc_pao');
 
 const OPERATORS=[{name:'Paul',pass:'paul2026'},{name:'Manon',pass:'manon2026'},{name:'Christopher',pass:'chris2026'},{name:'Félix',pass:'felix2026'},{name:'Invité',pass:'invité'}];
 const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos','Renaud Bidonville','Audrey Jourdan','Olivier Plumet'];
-const NC_TYPES=[{label:"Manque d'info",icon:"❓"},{label:"Information non claire",icon:"🔍"},{label:"Incohérence matière demandée",icon:"⚠️"},{label:"Pas de fond perdu",icon:"🖼️"},{label:"Typo non vectorisée",icon:"🔤"},{label:"Job non rentré sur plateforme BAT",icon:"📋"},{label:"Délai",icon:"⏱️"},{label:"Manque fichiers",icon:"📁"},{label:"Format incorrect",icon:"📐"},{label:"Autre",icon:"✏️"}];
+const NC_TYPES=[{label:"Manque d'info",icon:"❓"},{label:"Information non claire",icon:"🔍"},{label:"Incohérence matière demandée",icon:"⚠️"},{label:"Pas de fond perdu",icon:"🖼️"},{label:"Typo non vectorisée",icon:"🔤"},{label:"Job non rentré sur plateforme BAT",icon:"📋"},{label:"Délai",icon:"⏱️"},{label:"Manque fichiers",icon:"📁"},{label:"Format incorrect",icon:"📐"},{label:"Fichier pixellisé",icon:"🔳"},{label:"Autre",icon:"✏️"}];
 const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
 let ncData=[],currentUser=localStorage.getItem('lv_nc_user')||'',selTypes=[],selCommercial='',selTimeLost=null,pendingLoginIdx=null;
@@ -331,11 +344,46 @@ function renderList(){
 
 // DETAIL
 function showDetail(id){
-  const n=ncData.find(x=>x.id===id);if(!n)return;const d=new Date(n.date),ds=d.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),tl=n.timeLost?n.timeLost+' min':'0 min';
+  const n=ncData.find(x=>x.id===id);if(!n)return;
+  const d=new Date(n.date),ds=d.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),tl=n.timeLost?n.timeLost+' min':'0 min';
   document.getElementById('mRef').textContent=n.ref;
   document.getElementById('mBody').innerHTML=`<div class="d-row"><span class="d-label">Date</span><span class="d-value">${ds}</span></div><div class="d-row"><span class="d-label">Client</span><span class="d-value">${n.client}</span></div><div class="d-row"><span class="d-label">N° Job</span><span class="d-value">${n.job||'—'}</span></div><div class="d-row"><span class="d-label">Commercial</span><span class="d-value">${n.commercial||'—'}</span></div><div class="d-row"><span class="d-label">Type(s)</span><span class="d-value">${n.type}</span></div><div class="d-row"><span class="d-label">Temps perdu</span><span class="d-value"><span class="badge-time">⏱ ${tl}</span></span></div><div class="d-row"><span class="d-label">Opérateur</span><span class="d-value">${n.operator}</span></div>${n.remark?`<div class="d-full"><div class="d-label">Remarque</div><div class="d-value">${n.remark}</div></div>`:''}`;
-  document.getElementById('mBtns').innerHTML=`<button class="btn btn-danger-o" onclick="deleteNC(${n.id})">Supprimer</button>`;
+  document.getElementById('mBtns').innerHTML=`<button class="btn btn-danger-o" onclick="deleteNC(${n.id})">Supprimer</button><button class="btn btn-edit" onclick="editNC(${n.id})">Modifier</button>`;
   document.getElementById('modal').classList.add('show')}
+
+let editTypes=[];
+function editNC(id){
+  const n=ncData.find(x=>x.id===id);if(!n)return;
+  editTypes=n.types?[...n.types]:[n.type];
+  const comOptions=COMMERCIAUX.map(c=>`<option${c===n.commercial?' selected':''}>${c}</option>`).join('');
+  const typeChips=NC_TYPES.map(t=>{const sel=editTypes.includes(t.label)?'sel':'';return`<div class="edit-type-chip ${sel}" onclick="toggleEditType(this,'${t.label.replace(/'/g,"\\'")}')"> ${t.icon} ${t.label}</div>`}).join('');
+  document.getElementById('mBody').innerHTML=`
+    <div class="edit-field"><label>Client</label><input type="text" id="e-client" value="${n.client}"></div>
+    <div class="edit-field"><label>N° Job</label><input type="text" id="e-job" value="${n.job||''}"></div>
+    <div class="edit-field"><label>Commercial</label><select id="e-com">${comOptions}</select></div>
+    <div class="edit-field"><label>Type(s) de NC</label><div class="edit-types-grid" id="eTypeGrid">${typeChips}</div></div>
+    <div class="edit-field"><label>Temps perdu (min)</label><input type="number" id="e-time" min="0" value="${n.timeLost||0}"></div>
+    <div class="edit-field"><label>Remarque</label><textarea id="e-remark">${n.remark||''}</textarea></div>`;
+  document.getElementById('mBtns').innerHTML=`<button class="btn btn-ghost" onclick="showDetail(${n.id})">Annuler</button><button class="btn btn-primary" onclick="saveEdit(${n.id})">Sauvegarder</button>`}
+
+function toggleEditType(el,label){
+  el.classList.toggle('sel');
+  if(el.classList.contains('sel')){if(!editTypes.includes(label))editTypes.push(label)}
+  else{editTypes=editTypes.filter(t=>t!==label)}}
+
+function saveEdit(id){
+  const n=ncData.find(x=>x.id===id);if(!n||!n._docId)return;
+  const client=document.getElementById('e-client').value.trim();
+  const job=document.getElementById('e-job').value.trim();
+  const com=document.getElementById('e-com').value;
+  const time=parseInt(document.getElementById('e-time').value)||0;
+  const remark=document.getElementById('e-remark').value.trim();
+  if(!client||editTypes.length===0||!com){toast('Remplir : client, commercial et type(s)',true);return}
+  const updates={client,job,commercial:com,types:editTypes,type:editTypes.join(' + '),timeLost:time,remark};
+  ncCollection.doc(n._docId).update(updates).then(()=>{
+    document.getElementById('modal').classList.remove('show');
+    toast('NC modifiée')}).catch(e=>{console.error(e);toast('Erreur modification',true)})}
+
 function deleteNC(id){if(!confirm('Supprimer cette NC ?'))return;const nc=ncData.find(x=>x.id===id);if(!nc||!nc._docId)return;ncCollection.doc(nc._docId).delete().then(()=>{document.getElementById('modal').classList.remove('show');toast('NC supprimée')}).catch(e=>{console.error(e);toast('Erreur suppression',true)})}
 
 // STATS (current month)
