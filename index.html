@@ -40,6 +40,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .user-avatar{width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
 .logout-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
 .logout-btn:hover{border-color:var(--danger);color:var(--danger)}
+.pwd-field{margin-bottom:12px}
+.pwd-field label{display:block;font-size:11px;font-weight:600;color:var(--text2);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.pwd-field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;outline:none}
+.pwd-field input:focus{border-color:var(--accent)}
+.pwd-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.pwd-error{color:var(--danger);font-size:12px;font-weight:600;margin-top:4px}
 .stats-bar{display:flex;gap:8px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
 .stat-chip{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;padding:4px 11px;border-radius:14px;white-space:nowrap;display:flex;align-items:center;gap:5px}
 .stat-chip .dot{width:7px;height:7px;border-radius:50%}
@@ -217,12 +223,15 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
 <div class="app" id="app">
   <div class="topbar"><div class="topbar-left"><div class="topbar-logo">NC</div><h1>NC PAO</h1></div><div class="topbar-right"><div class="user-pill"><div class="user-avatar" id="userAvatar"></div><span id="userName"></span></div><button class="logout-btn" onclick="logout()">Déconnexion</button></div></div>
+
   <div class="stats-bar" id="statsBar"></div>
   <div class="nav-tabs">
     <div class="nav-tab active" data-v="new" onclick="switchView('new')">+ Nouvelle NC</div>
     <div class="nav-tab" data-v="list" onclick="switchView('list')">Registre</div>
     <div class="nav-tab" data-v="stats" onclick="switchView('stats')">Statistiques</div>
     <div class="nav-tab" data-v="recap" onclick="switchView('recap')">Récap mensuel</div>
+    <div class="nav-tab" data-v="profile" onclick="switchView('profile')">Mon profil</div>
+    <div class="nav-tab" data-v="email" onclick="switchView('email')">📧 Rapport email</div>
   </div>
   <div class="content">
     <div class="view active" id="view-new">
@@ -256,6 +265,52 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
     </div>
     <div class="view" id="view-stats"><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-pdf" onclick="exportPDF('stats')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export PDF</button></div><div id="statsContent"></div></div>
     <div class="view" id="view-recap"><div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-pdf" onclick="exportPDF('recap')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export PDF</button></div><div id="recapContent"></div></div>
+
+    <!-- PROFIL -->
+    <div class="view" id="view-profile">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:400px;box-shadow:var(--shadow-sm)">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:20px">Changer le mot de passe</h3>
+        <div class="pwd-field"><label>Mot de passe actuel</label><input type="password" id="pwd-old"></div>
+        <div class="pwd-field"><label>Nouveau mot de passe</label><input type="password" id="pwd-new"></div>
+        <div class="pwd-field"><label>Confirmer le nouveau</label><input type="password" id="pwd-confirm" onkeydown="if(event.key==='Enter')savePwd()"></div>
+        <div class="pwd-error" id="pwdError"></div>
+        <div style="margin-top:16px"><button class="btn btn-primary" onclick="savePwd()">Mettre à jour</button></div>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="view" id="view-email">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:500px;box-shadow:var(--shadow-sm);margin-bottom:20px">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:6px">⚙️ Configuration EmailJS</h3>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:4px">EmailJS permet d'envoyer des emails directement depuis le navigateur, gratuitement (200 mails/mois).</p>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px"><strong>Une seule fois à configurer.</strong></p>
+        <details style="margin-bottom:16px;font-size:13px;color:var(--text2)">
+          <summary style="cursor:pointer;font-weight:600;color:var(--text)">Comment obtenir ces clés (gratuit)</summary>
+          <ol style="margin:8px 0 0 16px;line-height:1.8">
+            <li>Créer un compte sur <a href="https://www.emailjs.com" target="_blank" style="color:var(--blue)">emailjs.com</a></li>
+            <li>Ajouter un service email (Gmail, Outlook…) → copier le <strong>Service ID</strong></li>
+            <li>Créer un template avec les variables <code>{{rapport_html}}</code> et <code>{{date}}</code> → copier le <strong>Template ID</strong></li>
+            <li>Dans Account → API Keys → copier la <strong>Public Key</strong></li>
+          </ol>
+        </details>
+        <div class="pwd-field"><label>Public Key</label><input type="text" id="ejs-pubkey" placeholder="ex: aBcDeFgHiJkLm"></div>
+        <div class="pwd-field"><label>Service ID</label><input type="text" id="ejs-service" placeholder="ex: service_xxxxxx"></div>
+        <div class="pwd-field"><label>Template ID</label><input type="text" id="ejs-template" placeholder="ex: template_xxxxxx"></div>
+        <div class="pwd-field"><label>Destinataire</label><input type="email" id="ejs-dest" placeholder="pao@luxvisual.lu" value="pao@luxvisual.lu"></div>
+        <div style="margin-top:16px"><button class="btn btn-primary" onclick="saveEmailConfig()">Sauvegarder la configuration</button></div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:500px;box-shadow:var(--shadow-sm)">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:6px">📧 Envoyer le rapport hebdomadaire</h3>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:4px">Le rapport contient : les NC de la semaine en cours, les statistiques du mois, et le récapitulatif mensuel.</p>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Il sera envoyé à <strong id="emailDestDisplay">pao@luxvisual.lu</strong>.</p>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:16px">Cliquez sur "Aperçu" pour prévisualiser le rapport avant envoi.</p>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-ghost" onclick="previewEmail()">Aperçu</button>
+          <button class="btn btn-primary" onclick="sendEmailReport()" id="sendEmailBtn">Envoyer le rapport</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -265,11 +320,18 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyASDTvELKcDDMEM7aV3rtlPYn-4jOfIXcQ",authDomain:"luxvisual-nc.firebaseapp.com",projectId:"luxvisual-nc",storageBucket:"luxvisual-nc.firebasestorage.app",messagingSenderId:"506331560097",appId:"1:506331560097:web:72bcca453bdc5e20ef18e0"});
-const db=firebase.firestore(),ncCollection=db.collection('nc_pao');
+const db=firebase.firestore(),ncCollection=db.collection('nc_pao'),pwdCollection=db.collection('nc_passwords');
 
 const OPERATORS=[{name:'Paul',pass:'paul2026'},{name:'Manon',pass:'manon2026'},{name:'Christopher',pass:'chris2026'},{name:'Félix',pass:'felix2026'},{name:'Invité',pass:'invité'}];
+let operatorPasswords={};
+OPERATORS.forEach(o=>operatorPasswords[o.name]=o.pass);
+
+// Load custom passwords from Firestore
+pwdCollection.get().then(snap=>{snap.forEach(doc=>{operatorPasswords[doc.id]=doc.data().pass})}).catch(()=>{});
+
 const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos','Renaud Bidonville','Audrey Jourdan','Olivier Plumet'];
 const NC_TYPES=[{label:"Manque d'info",icon:"❓"},{label:"Information non claire",icon:"🔍"},{label:"Incohérence matière demandée",icon:"⚠️"},{label:"Pas de fond perdu",icon:"🖼️"},{label:"Typo non vectorisée",icon:"🔤"},{label:"Job non rentré sur plateforme BAT",icon:"📋"},{label:"Délai",icon:"⏱️"},{label:"Manque fichiers",icon:"📁"},{label:"Format incorrect",icon:"📐"},{label:"Fichier pixellisé",icon:"🔳"},{label:"Autre",icon:"✏️"}];
 const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -279,7 +341,7 @@ let ncData=[],currentUser=localStorage.getItem('lv_nc_user')||'',selTypes=[],sel
 // LOGIN
 function initLogin(){document.getElementById('operatorGrid').innerHTML=OPERATORS.map((o,i)=>`<button class="${o.name==='Invité'?'op-btn full-width':'op-btn'}" onclick="selectUser(${i})">${o.name}</button>`).join('')}
 function selectUser(i){pendingLoginIdx=i;document.getElementById('operatorGrid').style.display='none';const p=document.getElementById('loginPass');p.classList.add('show');document.getElementById('loginPassUser').textContent=OPERATORS[i].name;document.getElementById('loginPassInput').value='';document.getElementById('loginError').textContent='';setTimeout(()=>document.getElementById('loginPassInput').focus(),100)}
-function submitPassword(){if(document.getElementById('loginPassInput').value===OPERATORS[pendingLoginIdx].pass){currentUser=OPERATORS[pendingLoginIdx].name;localStorage.setItem('lv_nc_user',currentUser);backToUsers();showApp()}else{document.getElementById('loginError').textContent='Mot de passe incorrect';document.getElementById('loginPassInput').value='';document.getElementById('loginPassInput').focus()}}
+function submitPassword(){const name=OPERATORS[pendingLoginIdx].name;if(document.getElementById('loginPassInput').value===operatorPasswords[name]){currentUser=name;localStorage.setItem('lv_nc_user',currentUser);backToUsers();showApp()}else{document.getElementById('loginError').textContent='Mot de passe incorrect';document.getElementById('loginPassInput').value='';document.getElementById('loginPassInput').focus()}}
 function backToUsers(){pendingLoginIdx=null;document.getElementById('operatorGrid').style.display='grid';document.getElementById('loginPass').classList.remove('show')}
 function logout(){currentUser='';localStorage.removeItem('lv_nc_user');document.getElementById('app').classList.remove('visible');document.getElementById('loginScreen').style.display='flex'}
 function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('app').classList.add('visible');document.getElementById('userName').textContent=currentUser;document.getElementById('userAvatar').textContent=currentUser.substring(0,2).toUpperCase();updateRef();updateStats();buildComGrid();buildTypeGrid();populateFilters()}
@@ -316,7 +378,7 @@ function saveNC(){
 function resetForm(){['f-client','f-job','f-remark','f-other','f-time-custom'].forEach(id=>document.getElementById(id).value='');document.getElementById('otherField').classList.remove('visible');selTypes=[];selCommercial='';selTimeLost=null;document.querySelectorAll('.nc-type-btn,.com-btn,.time-btn').forEach(b=>b.classList.remove('selected'));updateRef()}
 
 // TABS
-function switchView(v){document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.v===v));document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));if(v==='list')renderList();if(v==='stats')renderStats();if(v==='recap')renderRecap()}
+function switchView(v){document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.v===v));document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));if(v==='list')renderList();if(v==='stats')renderStats();if(v==='recap')renderRecap();if(v==='email')populateEmailFields()}
 
 // FILTERS
 function populateFilters(){
@@ -425,6 +487,64 @@ function renderRecap(){
 
 // EXPORT
 function exportXLSX(){if(!ncData.length){toast('Rien à exporter',true);return}const rows=ncData.map(n=>{const d=new Date(n.date);return{'Référence':n.ref,'Date':d.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric'}),'Heure':d.toLocaleTimeString('fr-LU',{hour:'2-digit',minute:'2-digit'}),'Client':n.client,'N° Job':n.job||'','Commercial':n.commercial||'','Type NC':n.type,'Temps perdu':(n.timeLost||0)+' min','Opérateur':n.operator,'Remarque':n.remark||''}});const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:18},{wch:12},{wch:8},{wch:20},{wch:18},{wch:22},{wch:36},{wch:12},{wch:14},{wch:40}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'NC PAO');XLSX.writeFile(wb,`NC_PAO_LuxVisual_${new Date().toISOString().slice(0,10).replace(/-/g,'')}.xlsx`);toast('Excel exporté')}
+
+// PASSWORD CHANGE
+function savePwd(){
+  const old=document.getElementById('pwd-old').value,nw=document.getElementById('pwd-new').value,conf=document.getElementById('pwd-confirm').value;
+  if(old!==operatorPasswords[currentUser]){document.getElementById('pwdError').textContent='Mot de passe actuel incorrect';return}
+  if(nw.length<3){document.getElementById('pwdError').textContent='3 caractères minimum';return}
+  if(nw!==conf){document.getElementById('pwdError').textContent='Les mots de passe ne correspondent pas';return}
+  pwdCollection.doc(currentUser).set({pass:nw}).then(()=>{operatorPasswords[currentUser]=nw;document.getElementById('pwd-old').value='';document.getElementById('pwd-new').value='';document.getElementById('pwd-confirm').value='';document.getElementById('pwdError').textContent='';toast('Mot de passe modifié')}).catch(e=>{console.error(e);document.getElementById('pwdError').textContent='Erreur de sauvegarde'})}
+
+// EMAILJS CONFIG
+const emailConfigCollection=db.collection('nc_email_config');
+let emailConfig={pubkey:'',service:'',template:'',dest:'pao@luxvisual.lu'};
+emailConfigCollection.doc('config').get().then(doc=>{if(doc.exists){emailConfig={...emailConfig,...doc.data()};populateEmailFields()}}).catch(()=>{});
+function populateEmailFields(){
+  if(document.getElementById('ejs-pubkey')){document.getElementById('ejs-pubkey').value=emailConfig.pubkey||'';document.getElementById('ejs-service').value=emailConfig.service||'';document.getElementById('ejs-template').value=emailConfig.template||'';document.getElementById('ejs-dest').value=emailConfig.dest||'pao@luxvisual.lu';document.getElementById('emailDestDisplay').textContent=emailConfig.dest||'pao@luxvisual.lu'}}
+function saveEmailConfig(){
+  emailConfig={pubkey:document.getElementById('ejs-pubkey').value.trim(),service:document.getElementById('ejs-service').value.trim(),template:document.getElementById('ejs-template').value.trim(),dest:document.getElementById('ejs-dest').value.trim()||'pao@luxvisual.lu'};
+  emailConfigCollection.doc('config').set(emailConfig).then(()=>{document.getElementById('emailDestDisplay').textContent=emailConfig.dest;toast('Configuration sauvegardée')}).catch(e=>{console.error(e);toast('Erreur de sauvegarde',true)})}
+
+// BUILD EMAIL HTML
+function buildReportHTML(){
+  const now=new Date(),cm=now.getMonth(),cy=now.getFullYear();
+  const weekStart=new Date(now);weekStart.setDate(now.getDate()-7);
+  const weekData=ncData.filter(n=>new Date(n.date)>=weekStart);
+  const monthData=ncData.filter(n=>{const d=new Date(n.date);return d.getMonth()===cm&&d.getFullYear()===cy});
+  const wTotal=weekData.length,wTime=weekData.reduce((s,n)=>s+(n.timeLost||0),0);
+  const mTotal=monthData.length,mTime=monthData.reduce((s,n)=>s+(n.timeLost||0),0);
+  function fmt(m){return m>=60?Math.floor(m/60)+'h'+(m%60?String(m%60).padStart(2,'0'):'00'):m+' min'}
+  const byCom={};monthData.forEach(n=>{if(n.commercial){if(!byCom[n.commercial])byCom[n.commercial]={count:0,time:0};byCom[n.commercial].count++;byCom[n.commercial].time+=(n.timeLost||0)}});
+  const byType={};monthData.forEach(n=>{(n.types||[n.type]).forEach(t=>{const c=t.startsWith('Autre:')?'Autre':t.trim();byType[c]=(byType[c]||0)+1})});
+  const comRows=Object.entries(byCom).sort((a,b)=>b[1].count-a[1].count).map(([n,d])=>`<tr><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${n}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;font-weight:600">${d.count}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:right">${fmt(d.time)}</td></tr>`).join('');
+  const typeRows=Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<tr><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${t}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:600">${c}</td></tr>`).join('');
+  const weekRows=weekData.map(n=>`<tr><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;color:#e67e22;font-weight:600">${n.ref}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${n.client}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;font-size:11px">${n.type}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${n.commercial||''}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:right">${(n.timeLost||0)}min</td></tr>`).join('');
+  return`<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1d2b">
+<div style="background:#fff;border-radius:12px;padding:28px;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+<div style="text-align:center;margin-bottom:24px"><div style="display:inline-block;background:linear-gradient(135deg,#e67e22,#e74c3c);color:#fff;font-weight:800;font-size:18px;width:50px;height:50px;line-height:50px;border-radius:14px;margin-bottom:10px">NC</div><h1 style="font-size:20px;margin:0">Rapport NC PAO</h1><p style="color:#6b7186;font-size:14px;margin:4px 0 0">LuxVisual — ${now.toLocaleDateString('fr-LU',{day:'2-digit',month:'long',year:'numeric'})}</p></div>
+<h2 style="font-size:16px;color:#e67e22;border-bottom:2px solid #fdf2e6;padding-bottom:8px">📅 Cette semaine</h2>
+<table style="width:100%;margin:12px 0 20px;font-size:14px"><tr><td style="padding:6px 0;color:#6b7186">Non-conformités</td><td style="padding:6px 0;text-align:right;font-weight:700">${wTotal}</td></tr><tr><td style="padding:6px 0;color:#6b7186">Temps perdu</td><td style="padding:6px 0;text-align:right;font-weight:700">${fmt(wTime)}</td></tr></table>
+${weekRows?`<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:24px"><tr style="background:#eef0f4"><th style="padding:8px;text-align:left;border-bottom:1px solid #e0e3ea">Réf.</th><th style="padding:8px;text-align:left">Client</th><th style="padding:8px;text-align:left">Type</th><th style="padding:8px;text-align:left">Commercial</th><th style="padding:8px;text-align:right">Temps</th></tr>${weekRows}</table>`:''}
+<h2 style="font-size:16px;color:#2e86de;border-bottom:2px solid #e8f1fb;padding-bottom:8px">📊 ${MONTHS_FR[cm]} ${cy}</h2>
+<table style="width:100%;margin:12px 0 20px;font-size:14px"><tr><td style="padding:6px 0;color:#6b7186">Total NC</td><td style="padding:6px 0;text-align:right;font-weight:700">${mTotal}</td></tr><tr><td style="padding:6px 0;color:#6b7186">Temps perdu</td><td style="padding:6px 0;text-align:right;font-weight:700">${fmt(mTime)}</td></tr><tr><td style="padding:6px 0;color:#6b7186">Moyenne/NC</td><td style="padding:6px 0;text-align:right;font-weight:700">${mTotal?Math.round(mTime/mTotal):0} min</td></tr></table>
+${comRows?`<h3 style="font-size:13px;color:#6b7186;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px">Par commercial</h3><table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px"><tr style="background:#eef0f4"><th style="padding:8px;text-align:left;border-bottom:1px solid #e0e3ea">Commercial</th><th style="padding:8px;text-align:center">NC</th><th style="padding:8px;text-align:right">Temps</th></tr>${comRows}</table>`:''}
+${typeRows?`<h3 style="font-size:13px;color:#6b7186;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px">Par type de NC</h3><table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px"><tr style="background:#eef0f4"><th style="padding:8px;text-align:left;border-bottom:1px solid #e0e3ea">Type</th><th style="padding:8px;text-align:right">Nombre</th></tr>${typeRows}</table>`:''}
+<div style="margin-top:24px;padding-top:16px;border-top:1px solid #e0e3ea;text-align:center;color:#9ca0b2;font-size:11px">Rapport automatique — NC PAO LuxVisual</div>
+</div></div>`}
+
+function previewEmail(){
+  const html=buildReportHTML();
+  const w=window.open('','_blank','width=700,height=800');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Aperçu rapport</title></head><body style="background:#f5f5f5;margin:0;padding:20px">${html}</body></html>`);
+  w.document.close()}
+
+function sendEmailReport(){
+  if(!emailConfig.pubkey||!emailConfig.service||!emailConfig.template){toast('Configurer EmailJS d\'abord',true);return}
+  const btn=document.getElementById('sendEmailBtn');btn.textContent='Envoi en cours...';btn.disabled=true;
+  const html=buildReportHTML();
+  emailjs.init(emailConfig.pubkey);
+  emailjs.send(emailConfig.service,emailConfig.template,{rapport_html:html,date:new Date().toLocaleDateString('fr-LU',{day:'2-digit',month:'long',year:'numeric'}),to_email:emailConfig.dest}).then(()=>{btn.textContent='Envoyer le rapport';btn.disabled=false;toast('Rapport envoyé à '+emailConfig.dest)}).catch(e=>{console.error(e);btn.textContent='Envoyer le rapport';btn.disabled=false;toast('Erreur d\'envoi: '+e.text,true)})}
 
 function exportPDF(target){
   const content=target==='stats'?document.getElementById('statsContent'):document.getElementById('recapContent');
