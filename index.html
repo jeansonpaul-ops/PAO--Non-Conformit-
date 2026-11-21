@@ -6,14 +6,14 @@
 <title>NC PAO — LuxVisual</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f3f4f6;--surface:#fff;--surface2:#f9fafb;--surface3:#f0f1f4;--border:rgba(28,31,46,.08);--border-solid:#e3e5ea;--text:#1c1f2e;--text2:#64687a;--text3:#9498aa;--accent:#d97706;--accent-light:#fefbf3;--accent-border:rgba(217,119,6,.22);--danger:#c53030;--danger-light:#fef2f2;--success:#16a34a;--success-light:#f0fdf4;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(28,31,46,.06)}
+:root{--bg:#f3f4f6;--surface:#fff;--surface2:#f9fafb;--surface3:#f0f1f4;--border:rgba(28,31,46,.08);--border-solid:#e3e5ea;--text:#1c1f2e;--text2:#64687a;--text3:#9498aa;--accent:#c2185b;--accent-light:#fce4ec;--accent-border:rgba(194,24,91,.22);--danger:#c53030;--danger-light:#fef2f2;--success:#16a34a;--success-light:#f0fdf4;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(28,31,46,.06)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
 
 /* LOGIN */
 .login-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
 .login-brand{display:flex;flex-direction:column;align-items:center;margin-bottom:32px}
-.login-logo{width:56px;height:56px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:17px;color:#fff;margin-bottom:12px}
+.login-logo{width:56px;height:56px;background:linear-gradient(135deg,#f06292 0%,#c2185b 50%,#880e4f 100%);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:17px;color:#fff;margin-bottom:12px;box-shadow:0 4px 14px rgba(194,24,91,.35)}
 .login-brand h1{font-size:20px;font-weight:600}.login-brand p{color:var(--text2);font-size:14px;margin-top:4px}
 .login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:360px;box-shadow:var(--shadow)}
 .login-box h2{font-size:14px;font-weight:500;margin-bottom:16px;color:var(--text2);text-align:center}
@@ -34,7 +34,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .app{display:none}.app.visible{display:block}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .topbar-left{display:flex;align-items:center;gap:10px}
-.topbar-logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11px;color:#fff}
+.topbar-logo{width:32px;height:32px;background:linear-gradient(135deg,#f06292 0%,#c2185b 50%,#880e4f 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11px;color:#fff;box-shadow:0 2px 8px rgba(194,24,91,.3)}
 .topbar h1{font-size:15px;font-weight:600}.topbar-right{display:flex;align-items:center;gap:10px}
 .user-pill{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 6px;font-size:13px;font-weight:500}
 .user-avatar{width:22px;height:22px;background:var(--text3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#fff}
@@ -74,10 +74,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 /* NC TYPES (multi-select) */
 .nc-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .nc-type-btn{padding:10px;background:var(--surface);border:1.5px solid var(--border-solid);border-radius:var(--radius-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center;line-height:1.3;display:flex;align-items:center;justify-content:center;gap:6px;position:relative}
-.nc-type-btn:hover{border-color:var(--accent);color:var(--accent)}.nc-type-btn:active{transform:scale(.98)}
-.nc-type-btn .check-mark{display:none;position:absolute;top:4px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--accent);font-size:10px;font-weight:600;line-height:16px;text-align:center;color:#fff}
+.nc-type-btn:active{transform:scale(.98)}
+.nc-type-btn .check-mark{display:none;position:absolute;top:4px;right:6px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.2);font-size:10px;font-weight:600;line-height:16px;text-align:center;color:#fff}
 .nc-type-btn.selected .check-mark{display:block}
-.nc-type-btn.selected{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
 
 .other-field{margin-bottom:20px;overflow:hidden;max-height:0;transition:max-height .2s,margin .2s}
 .other-field.visible{max-height:80px;margin-top:8px;margin-bottom:20px}
@@ -177,8 +176,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
 /* ICON HELPERS */
 .nav-ico{width:15px;height:15px;flex-shrink:0;display:inline-block;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.nc-ico{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--text3);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
-.nc-type-btn.selected .nc-ico{stroke:var(--accent)}
+.nc-ico{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--nc-color,var(--accent));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
+.nc-type-btn{border-left:3px solid var(--nc-color,var(--accent))}
+.nc-type-btn:hover{background:var(--nc-color,var(--accent));border-color:var(--nc-color,var(--accent));border-left-color:var(--nc-color,var(--accent));color:#fff}
+.nc-type-btn:hover .nc-ico{stroke:#fff}
+.nc-type-btn.selected{background:var(--nc-color,var(--accent));border-color:var(--nc-color,var(--accent));border-left-color:var(--nc-color,var(--accent));color:#fff}
+.nc-type-btn.selected .nc-ico{stroke:#fff}
+.nc-type-btn.selected .check-mark{background:rgba(0,0,0,.2)}
 .btn .nav-ico{width:14px;height:14px;vertical-align:-2px}
 
 @media(max-width:500px){.field-row{grid-template-columns:1fr}.nc-type-grid{grid-template-columns:1fr}.commercial-grid{grid-template-columns:1fr}.topbar h1{font-size:14px}.bar-label{width:100px;min-width:80px;font-size:12px}.time-row{flex-wrap:wrap}}
@@ -339,7 +343,7 @@ OPERATORS.forEach(o=>operatorPasswords[o.name]=o.pass);
 pwdCollection.get().then(snap=>{snap.forEach(doc=>{operatorPasswords[doc.id]=doc.data().pass})}).catch(()=>{});
 
 const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos','Renaud Bigonville','Audrey Jourdan','Olivier Plumet','Thibaut Wery','Marina'];
-const NC_TYPES=[{label:"Manque d'info",ico:"ico-info"},{label:"Information non claire",ico:"ico-unclear"},{label:"Incohérence matière demandée",ico:"ico-matiere"},{label:"Pas de fond perdu",ico:"ico-bleed"},{label:"Typo non vectorisée",ico:"ico-typo"},{label:"Job non rentré sur plateforme BAT",ico:"ico-platform"},{label:"Délai",ico:"ico-delay"},{label:"Manque fichiers",ico:"ico-files"},{label:"Format incorrect",ico:"ico-format"},{label:"Fichier pixellisé",ico:"ico-pixel"},{label:"Autre",ico:"ico-other"}];
+const NC_TYPES=[{label:"Manque d'info",ico:"ico-info",color:"#e8860c"},{label:"Information non claire",ico:"ico-unclear",color:"#db6b2a"},{label:"Incohérence matière demandée",ico:"ico-matiere",color:"#cf5040"},{label:"Pas de fond perdu",ico:"ico-bleed",color:"#c63d50"},{label:"Typo non vectorisée",ico:"ico-typo",color:"#be2d5a"},{label:"Job non rentré sur plateforme BAT",ico:"ico-platform",color:"#b52064"},{label:"Délai",ico:"ico-delay",color:"#f09a18"},{label:"Manque fichiers",ico:"ico-files",color:"#d55e35"},{label:"Format incorrect",ico:"ico-format",color:"#c94a48"},{label:"Fichier pixellisé",ico:"ico-pixel",color:"#bc3556"},{label:"Autre",ico:"ico-other",color:"#a01858"}];
 const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
 let ncData=[],currentUser=localStorage.getItem('lv_nc_user')||'',selTypes=[],selCommercial='',selTimeLost=null,pendingLoginIdx=null;
@@ -356,7 +360,7 @@ document.addEventListener('DOMContentLoaded',()=>{initLogin();if(currentUser)sho
 // GRIDS
 function buildComGrid(){document.getElementById('comGrid').innerHTML=COMMERCIAUX.map((c,i)=>`<button class="com-btn" data-i="${i}" onclick="pickCommercial(this,${i})">${c}</button>`).join('')}
 function pickCommercial(el,i){document.querySelectorAll('.com-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selCommercial=COMMERCIAUX[i]}
-function buildTypeGrid(){document.getElementById('typeGrid').innerHTML=NC_TYPES.map((t,i)=>{return`<button class="nc-type-btn" data-i="${i}" onclick="toggleType(this,${i})"><span class="check-mark">✓</span><svg class="nc-ico"><use href="#${t.ico}"/></svg>${t.label}</button>`}).join('')}
+function buildTypeGrid(){document.getElementById('typeGrid').innerHTML=NC_TYPES.map((t,i)=>{return`<button class="nc-type-btn" style="--nc-color:${t.color}" data-i="${i}" onclick="toggleType(this,${i})"><span class="check-mark">✓</span><svg class="nc-ico"><use href="#${t.ico}"/></svg>${t.label}</button>`}).join('')}
 function toggleType(el,i){const l=NC_TYPES[i].label;el.classList.toggle('selected');if(el.classList.contains('selected')){if(!selTypes.includes(l))selTypes.push(l)}else{selTypes=selTypes.filter(t=>t!==l)}const of=document.getElementById('otherField');if(selTypes.includes('Autre')){of.classList.add('visible');document.getElementById('f-other').focus()}else{of.classList.remove('visible');document.getElementById('f-other').value=''}}
 function pickTime(el,v){document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selTimeLost=v;document.getElementById('f-time-custom').value=''}
 function onCustomTime(){const v=parseInt(document.getElementById('f-time-custom').value);if(!isNaN(v)&&v>=0){selTimeLost=v;document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected'))}}
