@@ -8,19 +8,18 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.3.3/dist/email.min.js"></script>
 <style>
-/* ═══ TOKENS — NC PAO (vert / forêt) ═══ */
+/* ═══ TOKENS — NC PAO (bleu / teal / vert — architecture NC Print) ═══ */
 :root{
   --bg:#f6f7f9;--surface:#fff;--surface2:#f1f3f6;--line:#e3e6eb;--line2:#cdd2da;
   --text:#14181f;--text2:#4a5260;--text3:#5f6877;
-  /* Accent vert principal — adouci, moins BGL */
-  --accent:#34A872;--accent-hover:#2B9063;--accent-soft:#EAF7F0;
-  /* Vert secondaire (teal) */
-  --teal:#2A9D8F;--teal-dark:#1A7A6E;--teal-soft:#E5F4F2;
+  /* Accent bleu principal */
+  --accent:#0066cc;--accent-hover:#0052a3;--accent-soft:#e8f1fa;
+  /* Teal secondaire */
+  --teal:#0f8b8d;--teal-dark:#07515b;--teal-soft:#e1f3f3;
   /* Vert tertiaire */
-  --green:#3A8F6A;--green-soft:#E2F1EA;--green-dark:#1E6B4A;
-  --bar:#8ECFB5;
+  --green:#1e9e6a;--green-soft:#e4f5ec;--green-dark:#14663f;
+  --bar:#b5dcdc;
   /* Sémantique */
   --danger:#b3261e;--danger-soft:#fbeceb;--success:#1e7a46;
   /* Rayons */
@@ -42,7 +41,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* ═══ LOGIN ═══ */
 .login-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
 .login-brand{display:flex;flex-direction:column;align-items:center;margin-bottom:32px}
-.logo{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:500;font-size:16px;color:#fff;margin-bottom:12px;box-shadow:0 4px 12px rgba(27,158,94,.25)}
+.logo{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:500;font-size:16px;color:#fff;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,70,140,.25)}
 .login-brand h1{font-size:20px;font-weight:600}.login-brand p{color:var(--text2);font-size:14px;margin-top:4px}
 .login-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;width:100%;max-width:360px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .login-box h2{font-size:14px;font-weight:500;margin-bottom:16px;color:var(--text2);text-align:center}
@@ -61,7 +60,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* ═══ APP SHELL ═══ */
 .app{display:none}.app.visible{display:block}
-/* Topbar — gradient vert */
+/* Topbar — gradient bleu→teal→vert */
 .topbar{background:var(--surface);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;position:relative}
 .topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--teal) 55%,var(--green))}
 .topbar-left{display:flex;align-items:center;gap:10px}
@@ -82,9 +81,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* Nav — gradient active tab (button role=tab like Print) */
 .nav-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--line);padding:6px 20px;overflow-x:auto;gap:4px}
-.nav-tab{padding:8px 14px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:none;border-radius:20px;transition:all .2s var(--ease);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:none;font-family:var(--font)}
+.nav-tab{background:none;border:0;border-radius:var(--r-md);font-family:var(--font);min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:14px;color:var(--text2);cursor:pointer;transition:color .15s var(--ease),background-color .15s var(--ease);white-space:nowrap}
 .nav-tab:hover{color:var(--text);background:var(--surface2)}
-.nav-tab.active{background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff}
+.nav-tab.active,.nav-tab.active:hover{background:linear-gradient(135deg,var(--accent),#0a7f9a);color:#fff;font-weight:500;box-shadow:0 1px 2px rgba(10,43,92,.2)}
 
 .content{padding:20px;max-width:900px;margin:0 auto}.view{display:none}.view.active{display:block}
 
@@ -94,6 +93,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .fcard>.fh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,var(--accent-soft),var(--teal-soft));border-bottom:1px solid var(--line);font-size:14px;font-weight:500;color:var(--teal-dark);flex-wrap:wrap}
 .fcard>.fh::before{content:counter(fc);flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-family:var(--mono);font-size:12px;font-weight:500}
 .fcard>.fh .hint{font-weight:400;color:var(--text3);font-size:12px}
+.fh-opt{margin-left:auto;font-size:11px;font-weight:400;color:var(--text3);letter-spacing:.02em}
 .fcard>.fb{padding:16px}
 .fh .seg{margin-left:auto;background:var(--surface)}
 .fcard .kpi-row{margin:0;padding:0;border:0}
@@ -104,27 +104,30 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;
   font-family:var(--mono);font-size:15px;font-weight:500;color:#fff;
   border-radius:var(--r-md);padding:10px 14px;margin-bottom:20px;overflow:hidden;
-  background:linear-gradient(135deg,#1E6B4A 0%,#34A872 38%,#2A9D8F 100%);
+  background:linear-gradient(135deg,#0a4fa8 0%,#0066cc 38%,#0f8b8d 100%);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='44'%3E%3Ccircle cx='310' cy='22' r='28' fill='%23ffffff' opacity='.04'/%3E%3Ccircle cx='310' cy='22' r='16' fill='%23ffffff' opacity='.04'/%3E%3Ccircle cx='30' cy='22' r='36' fill='%23ffffff' opacity='.03'/%3E%3C!-- crop marks --%3E%3Cline x1='4' y1='0' x2='4' y2='8' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='0' y1='4' x2='8' y2='4' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='336' y1='0' x2='336' y2='8' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='332' y1='4' x2='340' y2='4' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='4' y1='36' x2='4' y2='44' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='0' y1='40' x2='8' y2='40' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='336' y1='36' x2='336' y2='44' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='332' y1='40' x2='340' y2='40' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3C/svg%3E"),
-    linear-gradient(135deg,#1E6B4A 0%,#34A872 38%,#2A9D8F 100%);
+    linear-gradient(135deg,#0a4fa8 0%,#0066cc 38%,#0f8b8d 100%);
   background-size:100% 100%,100% 100%
 }
 .ref-banner .date-sub{font-size:12px;color:rgba(255,255,255,.75);font-weight:400;font-family:var(--font);white-space:nowrap}
 
-/* ═══ PAGE BANNER ═══ */
-.page-banner{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.page-banner::after{content:'';flex:1;height:1px;background:var(--line)}
+/* ═══ PAGE BANNER (colored header like NC Print) ═══ */
+.page-banner{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--font);padding:24px 20px;font-size:32px}
+.page-banner .pb-t{display:block;font-size:32px;font-weight:500;letter-spacing:-.01em;line-height:1.2}
+.ref-banner .kick{display:block;font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78);margin-bottom:4px}
+.page-banner .btn{font-size:14px;letter-spacing:0;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);color:#fff;position:relative}
+.page-banner .btn:hover{background:rgba(255,255,255,.24)}
 
 /* ═══ COMBO BOX ═══ */
 .combo{position:relative}
 .fb .combo input{background:var(--surface);border:1px solid var(--line2);border-radius:var(--r-md);padding:8px 12px;min-height:44px;outline:none;width:100%;transition:border-color .15s var(--ease)}
 .fb .combo input:focus{border-color:var(--accent)}
 .combo input{padding-right:44px!important}
-.combo-toggle{position:absolute;right:0;top:0;bottom:0;width:44px;background:none;border:0;color:var(--teal);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:0 var(--r-md) var(--r-md) 0}
-.combo-toggle:hover{background:var(--surface2)}
-.combo-toggle .ic{transition:transform .15s var(--ease)}
-.combo.open .combo-toggle .ic{transform:rotate(180deg)}
+.combo-toggle,.combo-btn{position:absolute;right:0;top:0;bottom:0;width:44px;background:none;border:0;color:var(--teal);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:0 var(--r-md) var(--r-md) 0}
+.combo-toggle:hover,.combo-btn:hover{background:var(--surface2)}
+.combo-toggle .ic,.combo-btn .ic{transition:transform .15s var(--ease)}
+.combo.open .combo-toggle .ic,.combo.open .combo-btn .ic{transform:rotate(180deg)}
 .combo-list{display:none;position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);max-height:240px;overflow-y:auto;background:var(--surface);border:1px solid var(--line2);border-radius:var(--r-md);box-shadow:0 8px 24px rgba(10,43,92,.14);padding:4px;list-style:none;margin:0}
 .combo.open .combo-list{display:block}
 .combo-list li{padding:8px 12px;min-height:40px;display:flex;align-items:center;border-radius:var(--r-sm);cursor:pointer;font-size:14px;color:var(--text)}
@@ -159,7 +162,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 @media(hover:hover){.nc-type-btn:not(.selected):hover{--h:color-mix(in srgb,var(--c) 12%,#fff);border-color:var(--c);background:var(--h);color:var(--d);--pbg:var(--h);box-shadow:0 0 0 1px var(--c)}}
 .nc-type-btn.selected{--f:color-mix(in srgb,var(--c) 64%,#000);border-color:var(--f);background:var(--f);color:#fff;--pbg:var(--f);box-shadow:0 1px 2px rgba(0,0,0,.18)}
 .nc-type-btn.selected .nc-picto{color:#fff}
-.nc-type-btn:active{background:var(--surface2)}
+.nc-type-btn:not(.selected):active{background:var(--surface2)}
 
 .other-field{margin-bottom:20px;overflow:hidden;max-height:0;transition:max-height .25s var(--ease),margin .25s var(--ease)}
 .other-field.visible{max-height:80px;margin-top:8px;margin-bottom:20px}
@@ -187,19 +190,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .radio-pill.grav-bloquante.selected{background:var(--danger);border-color:var(--danger)}
 
 /* Supports multi-select dropdown */
-.supports-wrap{position:relative;margin-bottom:16px}
-.supports-input{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;cursor:pointer}
-.supports-input:focus{border-color:var(--accent)}
-.supports-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--line);border-top:none;border-radius:0 0 var(--r-md) var(--r-md);max-height:160px;overflow-y:auto;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.supports-dropdown.open{display:block}
-.supports-option{padding:8px 12px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .1s}
-.supports-option:hover{background:var(--accent-soft)}
-.supports-option.checked{color:var(--accent);font-weight:500}
-.supports-option .s-check{width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all .15s;flex-shrink:0}
-.supports-option.checked .s-check{background:var(--accent);border-color:var(--accent);color:#fff}
-.supports-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.support-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--r-sm);background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:500}
-.support-tag .tag-x{cursor:pointer;font-size:13px;line-height:1;opacity:.6}.support-tag .tag-x:hover{opacity:1}
 
 /* ═══ BUTTONS ═══ */
 .form-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
@@ -210,7 +200,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-export{background:var(--surface);color:var(--text2);border:1px solid var(--line)}.btn-export:hover{border-color:var(--accent);color:var(--accent)}
 .btn-danger-o{background:var(--danger-soft);color:var(--danger);border:1px solid rgba(179,38,30,.15)}
 .btn-pdf{background:var(--surface);color:var(--text2);border:1px solid var(--line)}.btn-pdf:hover{border-color:var(--accent);color:var(--accent)}
-.btn-edit{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(27,158,94,.18)}.btn-edit:hover{opacity:.9}
+.btn-edit{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(0,102,204,.18)}.btn-edit:hover{opacity:.9}
 
 /* Edit mode in modal */
 .edit-field{display:flex;flex-direction:column;gap:4px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.04)}
@@ -301,37 +291,41 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 @media(min-width:500px){.seg button span{display:inline}}
 
 /* Bar rows */
-.bar-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.chart [data-k]{transition:opacity .15s var(--ease),background-color .15s var(--ease),stroke-width .15s var(--ease),transform .15s var(--ease)}
+.chart.hl [data-k]:not(.on){opacity:.35}
+.bar-row{display:flex;align-items:center;gap:8px;padding:4px 8px;margin:0 -8px 2px;border-radius:var(--r-sm)}
+.bar-row.on,.lg.on,.col.on{background:var(--t)}
+.bar-row.on .bar-label,.bar-row.on .bar-val,.lg.on{color:var(--d)}
 .bar-label{width:140px;min-width:100px;font-size:12px;font-weight:500;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;color:var(--text)}
 .bar-track{flex:1;height:22px;background:var(--surface2);border-radius:var(--r-sm);overflow:hidden}
 .bar-fill{height:100%;border-radius:var(--r-sm);transition:width .4s var(--ease);min-width:2px}
 .bar-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text2);min-width:60px;text-align:right;white-space:nowrap}
 
 /* Columns */
-.cols{display:flex;align-items:flex-end;gap:4px;height:140px;padding-top:8px}
-.col{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0}
-.col-plot{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
-.col-wrap{width:100%;max-width:48px;display:flex;flex-direction:column;align-items:center}
-.col-v{font-family:var(--mono);font-size:10px;color:var(--text2);margin-bottom:2px;white-space:nowrap}
-.col-bar{width:100%;border-radius:var(--r-sm) var(--r-sm) 0 0;min-height:4px;flex:1}
-.col-l{font-size:10px;color:var(--text2);margin-top:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.cols{display:flex;align-items:stretch;gap:8px;height:220px;margin-bottom:16px}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;border-radius:var(--r-sm)}
+.col-plot{flex:1;min-height:0;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.col-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:100%}
+.col-v{font-family:var(--mono);font-size:12px;color:var(--text2);margin-bottom:4px;white-space:nowrap}
+.col-bar{flex:1;width:100%;max-width:48px;min-height:4px;border-radius:4px 4px 0 0}
+.col-l{height:24px;display:flex;align-items:center;font-size:12px;color:var(--text2);max-width:100%;overflow:hidden;white-space:nowrap}
 
 /* Legend */
-.legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px;padding-top:8px;border-top:1px solid var(--line);list-style:none}
-.lg{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);cursor:default}
-.lg .dot{width:8px;height:8px;border-radius:2px;display:inline-block;flex-shrink:0}
-.lg b{font-family:var(--mono);font-weight:500;margin-left:2px}
+.legend{list-style:none;padding:0;flex:1;min-width:220px}
+.lg{display:flex;align-items:center;gap:8px;padding:4px 8px;margin:0 -8px 2px;border-radius:var(--r-sm);font-size:14px;color:var(--text2)}
+.lg span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lg .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.lg b{font-family:var(--mono);font-size:12px;font-weight:400;white-space:nowrap}
 
 /* Pie / donut */
-.chart-flex{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.chart-flex{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
 .chart-flex svg{flex:none;width:200px;height:200px}
-.sl,.pie-sl{transition:opacity .2s;cursor:default}
-.dc-v{text-anchor:middle;font-family:var(--mono);font-size:18px;font-weight:500;fill:var(--text)}
-.dc-l{text-anchor:middle;font-size:10px;fill:var(--text3)}
-
-/* Chart highlight */
-.chart.hl [data-k]:not(.on){opacity:.35}
-.chart [data-k]{transition:opacity .2s}
+path.sl{fill:none;transition:stroke-width .15s var(--ease),opacity .15s var(--ease)}
+path.sl.on{stroke-width:34}
+.pie-sl{stroke:var(--surface);stroke-width:2;transform-origin:100px 100px}
+.pie-sl.on{transform:scale(1.04)}
+.dc-v{font-size:20px;font-weight:500;fill:var(--text);text-anchor:middle}
+.dc-l{font-size:12px;fill:var(--text3);text-anchor:middle}
 
 .stats-empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:14px}
 
@@ -461,17 +455,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         <div class="other-field" id="otherField"><input type="text" id="f-other" placeholder="Précisez le type"></div>
       </div></section>
 
-      <section class="fcard"><div class="fh"><span>Matière / support</span></div><div class="fb">
-        <div class="field"><div class="combo"><input type="text" id="f-mat" role="combobox" aria-expanded="false" autocomplete="off" placeholder="Choisir une matière"><button type="button" class="combo-btn" tabindex="-1" aria-label="Afficher la liste"><span data-ic="chevron" data-s="18"></span></button><ul class="combo-list" role="listbox"></ul></div></div>
-      </div></section>
-
-      <section class="fcard"><div class="fh"><span>Supports (multi-sélection)</span></div><div class="fb">
-        <div class="supports-wrap">
-          <input type="text" class="supports-input" id="f-supports" placeholder="Sélectionner un ou plusieurs supports…" readonly onclick="openSupports()">
-          <div class="supports-dropdown" id="supportsDropdown"></div>
-          <div class="supports-tags" id="supportsTags"></div>
-        </div>
-      </div></section>
 
       <section class="fcard"><div class="fh"><span>Gravité</span></div><div class="fb">
         <div class="section-label"><span data-ic="alert" data-s="14"></span>Niveau de gravité</div>
@@ -493,7 +476,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </div>
       </div></section>
 
-      <section class="fcard"><div class="fh"><span>Remarque</span></div><div class="fb">
+      <section class="fcard"><div class="fh"><span>Support</span><span class="fh-opt">facultatif</span></div><div class="fb">
+        <div class="field"><div class="combo"><input type="text" id="f-support" role="combobox" aria-expanded="false" autocomplete="off" placeholder="Choisir un support"><button type="button" class="combo-toggle" tabindex="-1" aria-label="Afficher la liste"><span data-ic="chevron" data-s="18"></span></button><ul class="combo-list" role="listbox"></ul></div></div>
+      </div></section>
+
+      <section class="fcard"><div class="fh"><span>Remarque</span><span class="fh-opt">facultatif</span></div><div class="fb">
         <div class="field"><textarea id="f-remark" placeholder="Détails optionnels…"></textarea></div>
       </div></section>
 
@@ -505,7 +492,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
     <!-- ═══ LIST ═══ -->
     <div class="view" id="view-list">
-      <div class="page-banner"><span data-ic="list" data-s="14"></span>Registre des NC</div>
+      <div class="ref-banner page-banner"><div><span class="kick">Historique</span><span class="pb-t">Registre</span><span class="date-sub" id="listSub"></span></div></div>
       <div class="list-toolbar">
         <input class="search-input" type="text" id="searchInput" placeholder="Rechercher…" oninput="renderList()">
         <select class="filter-select" id="filterType" onchange="renderList()"><option value="">Tous types</option></select>
@@ -517,7 +504,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
     <!-- ═══ STATS ═══ -->
     <div class="view" id="view-stats">
-      <div class="page-banner"><span data-ic="bars" data-s="14"></span>Statistiques du mois</div>
+      <div class="ref-banner page-banner"><div><span class="kick">Ce mois-ci</span><span class="pb-t">Statistiques</span><span class="date-sub" id="statsSub"></span></div></div>
       <div class="view-actions">
         <button class="btn btn-pdf" onclick="exportPDF('stats')"><span data-ic="download" data-s="14"></span>PDF</button>
       </div>
@@ -527,7 +514,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
     <!-- ═══ RECAP ═══ -->
     <div class="view" id="view-recap">
-      <div class="page-banner"><span data-ic="calendar" data-s="14"></span>Récapitulatif mensuel</div>
+      <div class="ref-banner page-banner"><div><span class="kick">Tous les mois</span><span class="pb-t">Récap mensuel</span><span class="date-sub" id="recapSub"></span></div></div>
       <div class="view-actions">
         <button class="btn btn-pdf" onclick="exportPDF('recap')"><span data-ic="download" data-s="14"></span>PDF</button>
       </div>
@@ -537,23 +524,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
     <!-- ═══ RAPPORT ═══ -->
     <div class="view" id="view-rapport">
-      <div class="page-banner"><span data-ic="send" data-s="14"></span>Rapport hebdomadaire</div>
+      <div class="ref-banner page-banner"><div><span class="kick">Envoi manuel</span><span class="pb-t">Rapport email</span><span class="date-sub">Destinataire(s) : <span id="rapport-dest-banner">pao@luxvisual.lu</span></span></div></div>
 
-      <section class="fcard" id="emailjs-setup"><div class="fh">Configuration EmailJS</div><div class="fb">
-        <p class="lead-text">EmailJS envoie les emails depuis le navigateur (200 par mois en gratuit). À configurer une seule fois.</p>
+      <section class="fcard" id="resend-setup"><div class="fh">Configuration Resend</div><div class="fb">
+        <p class="lead-text">Resend envoie les rapports par email. À configurer une seule fois.</p>
         <div class="note">
           <ol>
-            <li>Créer un compte sur <a href="https://www.emailjs.com" target="_blank" rel="noopener">emailjs.com</a>.</li>
-            <li>Ajouter un service email (Gmail, Outlook) et copier le <strong>Service ID</strong>.</li>
-            <li>Créer un template : champ To <code>{{to_email}}</code>, Subject <code>{{subject}}</code>, contenu <code>{{{rapport_html}}}</code> en triple accolades, sinon le HTML s'affiche en texte. Copier le <strong>Template ID</strong>.</li>
-            <li>Account, API Keys : copier la <strong>Public Key</strong>.</li>
+            <li>Créer un compte sur <a href="https://resend.com" target="_blank" rel="noopener">resend.com</a>.</li>
+            <li>API Keys : créer une clé et la copier ci-dessous.</li>
+            <li>Vérifier votre domaine d'envoi dans Resend (ou utiliser l'adresse <code>onboarding@resend.dev</code> pour tester).</li>
           </ol>
         </div>
         <div class="pin-fields">
-          <div class="pin-field"><label for="ejs-pubkey">Public Key</label><input type="text" id="ejs-pubkey" placeholder="ex. aBcDeFgHiJkLmNoPq"></div>
-          <div class="pin-field"><label for="ejs-service">Service ID</label><input type="text" id="ejs-service" placeholder="service_xxxxxxx"></div>
-          <div class="pin-field"><label for="ejs-template">Template ID</label><input type="text" id="ejs-template" placeholder="template_xxxxxxx"></div>
-          <div class="pin-field"><label for="ejs-to">Destinataire</label><input type="email" id="ejs-to" value="pao@luxvisual.lu"></div>
+          <div class="pin-field"><label for="rs-apikey">Clé API Resend</label><input type="text" id="rs-apikey" placeholder="re_xxxxxxxxxxxxxxxx"></div>
+          <div class="pin-field"><label for="rs-from">Expéditeur</label><input type="email" id="rs-from" value="onboarding@resend.dev" placeholder="noreply@luxvisual.lu"></div>
+          <div class="pin-field"><label for="rs-to">Destinataires</label><input type="text" id="rs-to" value="pao@luxvisual.lu" placeholder="email1@luxvisual.lu, email2@luxvisual.lu"></div>
+          <p class="hint" style="font-size:12px;color:var(--text3);margin-top:4px">Séparer plusieurs adresses par une virgule.</p>
         </div>
         <button class="btn btn-primary" onclick="saveEmailConfig()"><span data-ic="save" data-s="18"></span>Sauvegarder la configuration</button>
       </div></section>
@@ -571,7 +557,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
     <!-- ═══ PROFIL ═══ -->
     <div class="view" id="view-profil">
-      <div class="page-banner"><span data-ic="user" data-s="14"></span>Mon profil</div>
+      <div class="ref-banner page-banner"><div><span class="kick">Mon compte</span><span class="pb-t">Mon profil</span><span class="date-sub">Opérateur LuxVisual</span></div></div>
       <section class="fcard"><div class="fh">Changer le mot de passe</div><div class="fb">
         <div class="pwd-field"><label>Mot de passe actuel</label><input type="password" id="pw-old"></div>
         <div class="pwd-field"><label>Nouveau mot de passe</label><input type="password" id="pw-new"></div>
@@ -658,17 +644,17 @@ const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos',
 
 /* NC_TYPES — c/d/t colour triplets */
 const NC_TYPES=[
-  {label:"Manque d'info",         c:'#D64545',d:'#9B2C2C',t:'#FEE7E7'},
-  {label:"Information non claire", c:'#C46C32',d:'#8B4513',t:'#FDF0E3'},
-  {label:"Incohérence matière demandée",c:'#BBA530',d:'#7D6E1A',t:'#FBF8E8'},
-  {label:"Pas de fond perdu",     c:'#2EA87E',d:'#1A6B50',t:'#E6F7F0'},
-  {label:"Typo non vectorisée",   c:'#7B5EA7',d:'#533B7A',t:'#F0EBF7'},
-  {label:"Job non rentré sur plateforme BAT",c:'#D44E7C',d:'#9B2D55',t:'#FDE8EF'},
-  {label:"Délai",                 c:'#3A8FD5',d:'#1E5C8F',t:'#E6F0FA'},
-  {label:"Manque fichiers",       c:'#E0943A',d:'#A06318',t:'#FEF6ED'},
-  {label:"Format incorrect",      c:'#5BA8D4',d:'#2D6F8F',t:'#E8F4FB'},
-  {label:"Fichier pixellisé",     c:'#8B6EC7',d:'#5B3F9A',t:'#F1ECF9'},
-  {label:"Autre",                 c:'#7A8B9A',d:'#4A5968',t:'#EEF1F3'}
+  {label:"Manque d'info",         c:'#10489e',d:'#0a2b5c',t:'#e7eef9'},
+  {label:"Information non claire", c:'#136cc3',d:'#0a345c',t:'#e7f0f9'},
+  {label:"Incohérence matière demandée",c:'#0f7fba',d:'#084a6b',t:'#e3f1f9'},
+  {label:"Pas de fond perdu",     c:'#0a8fa0',d:'#06525c',t:'#e1f3f5'},
+  {label:"Typo non vectorisée",   c:'#0f8b8d',d:'#07515b',t:'#e1f3f3'},
+  {label:"Job non rentré sur plateforme BAT",c:'#0e8a76',d:'#065347',t:'#e1f4ef'},
+  {label:"Délai",                 c:'#13915e',d:'#0a5c35',t:'#e4f5ec'},
+  {label:"Manque fichiers",       c:'#1a9e5a',d:'#0e5c30',t:'#e5f6ec'},
+  {label:"Format incorrect",      c:'#1daa50',d:'#0f6a2e',t:'#e6f7ec'},
+  {label:"Fichier pixellisé",     c:'#13b357',d:'#0a6a2d',t:'#e4f8ea'},
+  {label:"Autre",                 c:'#13c35e',d:'#0a5c2d',t:'#e7f9ee'}
 ];
 
 const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -677,7 +663,7 @@ const ACTIONS=['Correction','Reprise complète','À analyser'];
 const SUPPORTS=['Vinyle adhésif','Bâche PVC','Dibond','PVC expansé','Plexiglas','Carton plume','Roll-up','Toile tendue','Papier couché','Papier offset','Papier recyclé','Textile polyester','Aluminium','Bois','Polypropylène','Film microperforé','Magnétique','Sticker sol'];
 const MATIERES=['Bâche','Vinyle adhésif','Forex / PVC','Dibond','Akylux','Plexiglas','Papier / Affiche','Textile','Autre'];
 
-let ncData=[],currentUser=localStorage.getItem('lv_nc_user')||'',selTypes=[],selCommercial='',selTimeLost=null,selGravite='',selAction='',selSupports=[],pendingLoginIdx=null;
+let ncData=[],currentUser=localStorage.getItem('lv_nc_user')||'',selTypes=[],selCommercial='',selTimeLost=null,selGravite='',selAction='',pendingLoginIdx=null;
 
 /* ═══ TYPE HELPERS ═══ */
 function typeColor(l){const t=NC_TYPES.find(x=>x.label===l||(l&&l.startsWith('Autre')&&x.label==='Autre'));return t||NC_TYPES[NC_TYPES.length-1]}
@@ -777,15 +763,12 @@ function buildForm(){
   const ar=document.getElementById('actRow');
   ar.innerHTML=ACTIONS.map(a=>`<button type="button" class="radio-pill" onclick="pickAction(this,'${esc(a)}')">${esc(a)}</button>`).join('');
 
-  // Supports dropdown
-  renderSupportsDropdown();
-
   // Combo boxes
   const jobs=()=>[...new Set(ncData.map(n=>n.job).filter(Boolean))];
   const clients=()=>[...new Set(ncData.map(n=>n.client).filter(Boolean))];
   initCombo(document.getElementById('f-job'),jobs);
   initCombo(document.getElementById('f-client'),clients);
-  initCombo(document.getElementById('f-mat'),()=>MATIERES);
+  initCombo(document.getElementById('f-support'),()=>SUPPORTS);
 
   updateDate();
 }
@@ -796,6 +779,7 @@ function pickCom(el,name){
   selCommercial=name;
 }
 function toggleType(el,label,idx){
+  label=NC_TYPES[idx].label;
   el.classList.toggle('selected');
   el.setAttribute('aria-pressed',el.classList.contains('selected'));
   if(el.classList.contains('selected')){if(!selTypes.includes(label))selTypes.push(label)}
@@ -818,35 +802,6 @@ function pickAction(el,val){
   el.classList.add('selected');selAction=val;
 }
 
-/* ═══ SUPPORTS multi-select ═══ */
-function renderSupportsDropdown(){
-  const dd=document.getElementById('supportsDropdown');
-  dd.innerHTML=SUPPORTS.map(s=>`<div class="supports-option" onclick="toggleSupport('${esc(s)}')"><span class="s-check">✓</span>${esc(s)}</div>`).join('');
-}
-function openSupports(){
-  const dd=document.getElementById('supportsDropdown');
-  dd.classList.toggle('open');
-  updateSupportsUI();
-}
-function toggleSupport(s){
-  if(selSupports.includes(s))selSupports=selSupports.filter(x=>x!==s);
-  else selSupports.push(s);
-  updateSupportsUI();
-}
-function removeSupport(s){selSupports=selSupports.filter(x=>x!==s);updateSupportsUI()}
-function updateSupportsUI(){
-  const dd=document.getElementById('supportsDropdown');
-  dd.querySelectorAll('.supports-option').forEach(el=>{
-    const name=el.textContent.replace('✓','').trim();
-    el.classList.toggle('checked',selSupports.includes(name));
-  });
-  document.getElementById('f-supports').value=selSupports.length?selSupports.length+' support(s)':'';
-  const tags=document.getElementById('supportsTags');
-  tags.innerHTML=selSupports.map(s=>`<span class="support-tag">${esc(s)}<span class="tag-x" onclick="removeSupport('${esc(s)}')">×</span></span>`).join('');
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.supports-wrap'))document.getElementById('supportsDropdown')?.classList.remove('open');
-});
 
 /* ═══ REF / DATE ═══ */
 function generateRef(){
@@ -879,8 +834,8 @@ function saveNC(){
     commercial:selCommercial,
     types,
     type:types.join(' + '),
-    matiere:document.getElementById('f-mat').value.trim(),
-    supports:[...selSupports],
+    matiere:'',
+    supports:[document.getElementById('f-support').value.trim()].filter(Boolean),
     gravite:selGravite,
     action:selAction,
     timeLost:time,
@@ -893,15 +848,14 @@ function saveNC(){
 }
 
 function resetForm(){
-  selTypes=[];selCommercial='';selTimeLost=null;selGravite='';selAction='';selSupports=[];
+  selTypes=[];selCommercial='';selTimeLost=null;selGravite='';selAction='';
   document.querySelectorAll('.gra-btn,.nc-type-btn,.time-btn,.radio-pill').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false')});
   document.getElementById('f-job').value='';document.getElementById('f-client').value='';
-  document.getElementById('f-mat').value='';document.getElementById('f-time').value='';
+  document.getElementById('f-time').value='';
+  document.getElementById('f-support').value='';
   document.getElementById('f-remark').value='';document.getElementById('f-other').value='';
   document.getElementById('otherField').classList.remove('visible');
   document.getElementById('selCount').textContent='0';
-  document.getElementById('f-supports').value='';
-  document.getElementById('supportsTags').innerHTML='';
   updateRef();updateDate();
 }
 
@@ -979,7 +933,7 @@ function showDetail(id){
     <div class="d-row"><span class="d-label">N° Job</span><span class="d-value" style="font-family:var(--mono)">${esc(n.job||'—')}</span></div>
     <div class="d-full"><span class="d-label">Type</span><div class="d-value type-tags">${typeTags(types)}</div></div>
     <div class="d-row"><span class="d-label">Matière</span><span class="d-value">${esc(n.matiere||'—')}</span></div>
-    ${n.supports&&n.supports.length?`<div class="d-full"><span class="d-label">Supports</span><div class="d-value">${n.supports.map(s=>`<span class="support-tag">${esc(s)}</span>`).join(' ')}</div></div>`:''}
+    ${n.supports&&n.supports.length?`<div class="d-full"><span class="d-label">Support</span><div class="d-value">${n.supports.join(', ')}</div></div>`:''}
     <div class="d-row"><span class="d-label">Gravité</span><span class="d-value">${esc(n.gravite||'—')}</span></div>
     <div class="d-row"><span class="d-label">Action</span><span class="d-value">${esc(n.action||'—')}</span></div>
     <div class="d-row"><span class="d-label">Temps perdu</span><span class="d-value" style="font-family:var(--mono)">${n.timeLost||0} min</span></div>
@@ -1323,36 +1277,50 @@ new MutationObserver(ms=>ms.forEach(r=>{const t=r.target;if(t.matches&&t.matches
   .observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
 
 // ═══════════════════════════════════════════════
-// RAPPORT EMAIL (EmailJS)
+// RAPPORT EMAIL (Resend)
 // ═══════════════════════════════════════════════
-const EMAILJS_CONFIG_KEY = 'ncpao_emailjs';
+const RESEND_CONFIG_KEY = 'ncpao_resend';
 
 function getEmailConfig(){
-  try{ return JSON.parse(localStorage.getItem(EMAILJS_CONFIG_KEY)||'{}'); }
+  try{ return JSON.parse(localStorage.getItem(RESEND_CONFIG_KEY)||'{}'); }
   catch{ return {}; }
 }
 
+function parseRecipients(str){
+  return (str||'').split(',').map(s=>s.trim()).filter(s=>s.includes('@'));
+}
+
 function saveEmailConfig(){
+  const rawTo = document.getElementById('rs-to').value.trim() || 'pao@luxvisual.lu';
   const cfg = {
-    publicKey:  document.getElementById('ejs-pubkey').value.trim(),
-    serviceId:  document.getElementById('ejs-service').value.trim(),
-    templateId: document.getElementById('ejs-template').value.trim(),
-    to:         document.getElementById('ejs-to').value.trim() || 'pao@luxvisual.lu',
+    apiKey: document.getElementById('rs-apikey').value.trim(),
+    from:   document.getElementById('rs-from').value.trim() || 'onboarding@resend.dev',
+    to:     rawTo,
   };
-  if(!cfg.publicKey||!cfg.serviceId||!cfg.templateId){
-    toast('Remplir tous les champs EmailJS',true); return;
+  if(!cfg.apiKey){
+    toast('Remplir la clé API Resend',true); return;
   }
-  localStorage.setItem(EMAILJS_CONFIG_KEY, JSON.stringify(cfg));
-  document.getElementById('rapport-dest').textContent = cfg.to;
-  toast('Configuration EmailJS sauvegardée');
+  const recipients = parseRecipients(rawTo);
+  if(!recipients.length){
+    toast('Ajouter au moins un destinataire valide',true); return;
+  }
+  localStorage.setItem(RESEND_CONFIG_KEY, JSON.stringify(cfg));
+  const destText = recipients.join(', ');
+  document.getElementById('rapport-dest').textContent = destText;
+  document.getElementById('rapport-dest-banner').textContent = destText;
+  toast('Configuration Resend sauvegardée');
 }
 
 function loadEmailConfigUI(){
   const cfg = getEmailConfig();
-  if(cfg.publicKey)  document.getElementById('ejs-pubkey').value  = cfg.publicKey;
-  if(cfg.serviceId)  document.getElementById('ejs-service').value  = cfg.serviceId;
-  if(cfg.templateId) document.getElementById('ejs-template').value = cfg.templateId;
-  if(cfg.to)         { document.getElementById('ejs-to').value = cfg.to; document.getElementById('rapport-dest').textContent = cfg.to; }
+  if(cfg.apiKey) document.getElementById('rs-apikey').value = cfg.apiKey;
+  if(cfg.from)   document.getElementById('rs-from').value   = cfg.from;
+  if(cfg.to){
+    document.getElementById('rs-to').value = cfg.to;
+    const destText = parseRecipients(cfg.to).join(', ') || cfg.to;
+    document.getElementById('rapport-dest').textContent = destText;
+    document.getElementById('rapport-dest-banner').textContent = destText;
+  }
   const last = localStorage.getItem('ncpao_last_rapport');
   if(last) document.getElementById('rapport-last-sent').textContent = 'Dernier envoi : ' + last;
 }
@@ -1377,7 +1345,7 @@ function buildRapportHTML(){
   const semStr  = `${monday.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit'})} – ${sunday.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
 
   // Palette email : graphite + accent vert
-  const INK='#14181f', INK2='#4a5260', INK3='#6b7482', LINE='#e3e6eb', SOFT='#f1f3f6', ACC='#34A872', BAR='#8ECFB5', TEAL='#2A9D8F', GREEN='#1E6B4A';
+  const INK='#14181f', INK2='#4a5260', INK3='#6b7482', LINE='#e3e6eb', SOFT='#f1f3f6', ACC='#0066cc', BAR='#b5dcdc', TEAL='#0f8b8d', GREEN='#1e9e6a';
 
   function barChart(entries, total, title, colorFor){
     if(!entries.length) return '';
@@ -1459,10 +1427,10 @@ function buildRapportHTML(){
   return `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:700px;margin:0 auto;background:#ffffff;color:${INK}">
 
-  <div style="background:#0D4A30;padding:24px 32px;color:#ffffff">
-    <div style="font-size:12px;color:#a8d5be;margin-bottom:8px">LuxVisual · Pôle PAO</div>
+  <div style="background:#0a2b5c;padding:24px 32px;color:#ffffff">
+    <div style="font-size:12px;color:#a8c8e8;margin-bottom:8px">LuxVisual · Pôle PAO</div>
     <div style="font-size:22px;font-weight:bold;margin-bottom:4px">Rapport NC-PAO</div>
-    <div style="font-size:13px;color:#c8e8d8">Semaine du ${semStr} · généré le ${dateStr}</div>
+    <div style="font-size:13px;color:#c0daf0">Semaine du ${semStr} · généré le ${dateStr}</div>
   </div>
 
   <div style="height:4px;background:${ACC};line-height:4px;font-size:0">&nbsp;</div>
@@ -1541,15 +1509,13 @@ function previewRapport(){
 
 function sendRapport(){
   const cfg = getEmailConfig();
-  if(!cfg.publicKey||!cfg.serviceId||!cfg.templateId){
-    toast("Configurer EmailJS d'abord (section ci-dessus)",true); return;
+  if(!cfg.apiKey){
+    toast("Configurer Resend d'abord (section ci-dessus)",true); return;
   }
   const btn = document.getElementById('btn-send-rapport');
   const label = document.getElementById('send-label');
   label.textContent = 'Envoi en cours…';
   btn.disabled = true;
-
-  emailjs.init(cfg.publicKey);
 
   const now = new Date();
   const day = now.getDay()||7;
@@ -1557,20 +1523,29 @@ function sendRapport(){
   const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
   const semStr = `${monday.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit'})} – ${sunday.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
 
-  emailjs.send(cfg.serviceId, cfg.templateId, {
-    to_email:     cfg.to,
-    subject:      `Rapport NC-PAO — Semaine du ${semStr}`,
-    rapport_html: buildRapportHTML(),
-    date:         now.toLocaleDateString('fr-LU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
-    semaine:      semStr,
+  fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${cfg.apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: cfg.from || 'onboarding@resend.dev',
+      to: parseRecipients(cfg.to || 'pao@luxvisual.lu'),
+      subject: `Rapport NC-PAO — Semaine du ${semStr}`,
+      html: buildRapportHTML(),
+    }),
+  }).then(r=>{
+    if(!r.ok) return r.json().then(e=>{ throw new Error(e.message||r.statusText); });
+    return r.json();
   }).then(()=>{
     const ts = now.toLocaleString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     localStorage.setItem('ncpao_last_rapport', ts);
     document.getElementById('rapport-last-sent').textContent = 'Dernier envoi : ' + ts;
-    toast('Rapport envoyé à ' + cfg.to);
+    toast('Rapport envoyé à ' + parseRecipients(cfg.to||'pao@luxvisual.lu').join(', '));
   }).catch(err=>{
     console.error(err);
-    toast("Erreur d'envoi. Vérifier la config EmailJS.",true);
+    toast("Erreur d'envoi : " + err.message,true);
   }).finally(()=>{
     label.textContent = 'Envoyer le rapport';
     btn.disabled = false;
