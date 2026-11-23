@@ -17,10 +17,10 @@
   /* Accent vert principal */
   --accent:#1a8c5b;--accent-hover:#15724a;--accent-soft:#e4f5ec;
   /* Teal secondaire */
-  --teal:#0f8b8d;--teal-dark:#07515b;--teal-soft:#e1f3f3;
+  --teal:#0e7fa6;--teal-dark:#065a78;--teal-soft:#e0f0f8;
   /* Bleu tertiaire */
   --blue:#0066cc;--blue-soft:#e8f1fa;--blue-dark:#0a2b5c;
-  --bar:#b5dcdc;
+  --bar:#b0d4e4;
   /* Sémantique */
   --danger:#b3261e;--danger-soft:#fbeceb;--success:#1e7a46;
   /* Rayons */
@@ -541,7 +541,22 @@ path.sl.on{stroke-width:34}
           <div class="pin-field"><label for="rs-to">Destinataires</label><input type="text" id="rs-to" value="pao@luxvisual.lu" placeholder="email1@luxvisual.lu, email2@luxvisual.lu"></div>
           <p class="hint" style="font-size:12px;color:var(--text3);margin-top:4px">Séparer plusieurs adresses par une virgule.</p>
         </div>
-        <button class="btn btn-primary" onclick="saveEmailConfig()"><span data-ic="save" data-s="18"></span>Sauvegarder la configuration</button>
+        <div style="margin-top:16px;padding:16px;background:var(--surface2);border-radius:var(--r-md)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text)">
+              <input type="checkbox" id="rs-auto" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer"> Envoi automatique hebdomadaire
+            </label>
+          </div>
+          <div class="pin-field" style="max-width:200px">
+            <label for="rs-day">Jour d'envoi</label>
+            <select id="rs-day" style="padding:8px 12px;border:1px solid var(--line);border-radius:var(--r-md);font-family:var(--font);font-size:14px;background:var(--surface);color:var(--text)">
+              <option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option>
+              <option value="4">Jeudi</option><option value="5" selected>Vendredi</option>
+            </select>
+          </div>
+          <p class="hint" style="font-size:12px;color:var(--text3);margin-top:6px">Le rapport sera envoyé automatiquement à l'ouverture de l'appli le jour choisi (une seule fois par semaine).</p>
+        </div>
+        <button class="btn btn-primary" onclick="saveEmailConfig()" style="margin-top:16px"><span data-ic="save" data-s="18"></span>Sauvegarder la configuration</button>
       </div></section>
 
       <section class="fcard"><div class="fh">Envoyer le rapport hebdomadaire</div><div class="fb">
@@ -646,9 +661,9 @@ const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos',
 const NC_TYPES=[
   {label:"Manque d'info",         c:'#2979FF',d:'#0D47A1',t:'#E3F2FD'},
   {label:"Information non claire", c:'#AA00FF',d:'#6200EA',t:'#F3E5F5'},
-  {label:"Incohérence matière demandée",c:'#E040FB',d:'#7B1FA2',t:'#F3E5F5'},
+  {label:"Incohérence matière demandée",c:'#FF4081',d:'#C2185B',t:'#FCE4EC'},
   {label:"Pas de fond perdu",     c:'#FF1744',d:'#B71C1C',t:'#FFEBEE'},
-  {label:"Typo non vectorisée",   c:'#FF6D00',d:'#BF360C',t:'#FFF3E0'},
+  {label:"Typo non vectorisée",   c:'#FF9100',d:'#E65100',t:'#FFF3E0'},
   {label:"Job non rentré sur plateforme BAT",c:'#FFD600',d:'#F57F17',t:'#FFFDE7'},
   {label:"Délai",                 c:'#76FF03',d:'#33691E',t:'#F1F8E9'},
   {label:"Manque fichiers",       c:'#00E676',d:'#1B5E20',t:'#E8F5E9'},
@@ -1297,6 +1312,8 @@ function saveEmailConfig(){
     apiKey: document.getElementById('rs-apikey').value.trim(),
     from:   document.getElementById('rs-from').value.trim() || 'onboarding@resend.dev',
     to:     rawTo,
+    autoSend: document.getElementById('rs-auto').checked,
+    autoDay:  parseInt(document.getElementById('rs-day').value)||5,
   };
   if(!cfg.apiKey){
     toast('Remplir la clé API Resend',true); return;
@@ -1322,6 +1339,8 @@ function loadEmailConfigUI(){
     document.getElementById('rapport-dest').textContent = destText;
     document.getElementById('rapport-dest-banner').textContent = destText;
   }
+  if(cfg.autoSend) document.getElementById('rs-auto').checked = true;
+  if(cfg.autoDay)  document.getElementById('rs-day').value = cfg.autoDay;
   const last = localStorage.getItem('ncpao_last_rapport');
   if(last) document.getElementById('rapport-last-sent').textContent = 'Dernier envoi : ' + last;
 }
@@ -1554,6 +1573,67 @@ function sendRapport(){
 }
 
 // ═══════════════════════════════════════════════
+// ENVOI AUTO HEBDOMADAIRE
+// ═══════════════════════════════════════════════
+let autoSendDone = false;
+function checkAutoSend(){
+  if(autoSendDone) return;
+  const cfg = getEmailConfig();
+  if(!cfg.autoSend || !cfg.apiKey) return;
+
+  const now = new Date();
+  const todayDow = now.getDay()||7; // 1=lundi..7=dimanche
+  if(todayDow !== (cfg.autoDay||5)) return;
+
+  // Vérifier si déjà envoyé cette semaine (clé = lundi de la semaine)
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - todayDow + 1);
+  const weekKey = `${monday.getFullYear()}-${String(monday.getMonth()+1).padStart(2,'0')}-${String(monday.getDate()).padStart(2,'0')}`;
+  const lastAutoWeek = localStorage.getItem('ncpao_auto_week');
+  if(lastAutoWeek === weekKey) return;
+
+  // Envoyer
+  autoSendDone = true;
+  localStorage.setItem('ncpao_auto_week', weekKey);
+
+  const recipients = parseRecipients(cfg.to || 'pao@luxvisual.lu');
+  if(!recipients.length) return;
+
+  const day = now.getDay()||7;
+  const mon = new Date(now); mon.setDate(now.getDate()-day+1);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  const semStr = `${mon.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit'})} – ${sun.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
+
+  fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${cfg.apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: cfg.from || 'onboarding@resend.dev',
+      to: recipients,
+      subject: `Rapport NC-PAO — Semaine du ${semStr}`,
+      html: buildRapportHTML(),
+    }),
+  }).then(r=>{
+    if(!r.ok) return r.json().then(e=>{ throw new Error(e.message||r.statusText); });
+    return r.json();
+  }).then(()=>{
+    const ts = now.toLocaleString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    localStorage.setItem('ncpao_last_rapport', ts);
+    const el = document.getElementById('rapport-last-sent');
+    if(el) el.textContent = 'Dernier envoi (auto) : ' + ts;
+    toast('Rapport hebdomadaire envoyé automatiquement');
+  }).catch(err=>{
+    console.error('Auto-send failed:', err);
+    // Remettre la clé pour retenter au prochain chargement
+    localStorage.removeItem('ncpao_auto_week');
+    autoSendDone = false;
+  });
+}
+
+// ═══════════════════════════════════════════════
 // INIT — listener temps réel Firestore
 // ═══════════════════════════════════════════════
 function showBanner(id,pos,msg){
@@ -1586,6 +1666,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(av && av.id==='view-stats') renderStats();
     if(av && av.id==='view-recap') renderRecap();
     const eb=document.getElementById('firebase-error-banner'); if(eb) eb.remove();
+    checkAutoSend();
   }, e=>{
     console.error('Firebase error:', e.code, e.message);
     let msg;
