@@ -643,17 +643,17 @@ const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos',
 
 /* NC_TYPES — c/d/t colour triplets — spectre large, vives, très distinctes */
 const NC_TYPES=[
-  {label:"Manque d'info",         c:'#2563eb',d:'#1e3a8a',t:'#dbeafe'},
-  {label:"Information non claire", c:'#7c3aed',d:'#4c1d95',t:'#ede9fe'},
-  {label:"Incohérence matière demandée",c:'#db2777',d:'#831843',t:'#fce7f3'},
-  {label:"Pas de fond perdu",     c:'#dc2626',d:'#7f1d1d',t:'#fee2e2'},
-  {label:"Typo non vectorisée",   c:'#ea580c',d:'#7c2d12',t:'#fff7ed'},
-  {label:"Job non rentré sur plateforme BAT",c:'#d97706',d:'#78350f',t:'#fef3c7'},
-  {label:"Délai",                 c:'#65a30d',d:'#365314',t:'#ecfccb'},
-  {label:"Manque fichiers",       c:'#059669',d:'#064e3b',t:'#d1fae5'},
-  {label:"Format incorrect",      c:'#0891b2',d:'#164e63',t:'#cffafe'},
-  {label:"Fichier pixellisé",     c:'#6366f1',d:'#312e81',t:'#e0e7ff'},
-  {label:"Autre",                 c:'#78716c',d:'#44403c',t:'#f5f5f4'}
+  {label:"Manque d'info",         c:'#3b82f6',d:'#1d4ed8',t:'#dbeafe'},
+  {label:"Information non claire", c:'#8b5cf6',d:'#6d28d9',t:'#ede9fe'},
+  {label:"Incohérence matière demandée",c:'#ec4899',d:'#be185d',t:'#fce7f3'},
+  {label:"Pas de fond perdu",     c:'#ef4444',d:'#b91c1c',t:'#fee2e2'},
+  {label:"Typo non vectorisée",   c:'#f97316',d:'#c2410c',t:'#fff7ed'},
+  {label:"Job non rentré sur plateforme BAT",c:'#eab308',d:'#a16207',t:'#fef9c3'},
+  {label:"Délai",                 c:'#84cc16',d:'#4d7c0f',t:'#ecfccb'},
+  {label:"Manque fichiers",       c:'#10b981',d:'#047857',t:'#d1fae5'},
+  {label:"Format incorrect",      c:'#06b6d4',d:'#0e7490',t:'#cffafe'},
+  {label:"Fichier pixellisé",     c:'#818cf8',d:'#4f46e5',t:'#e0e7ff'},
+  {label:"Autre",                 c:'#a8a29e',d:'#57534e',t:'#f5f5f4'}
 ];
 
 const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -752,7 +752,7 @@ function buildForm(){
 
   // Type grid
   const tg=document.getElementById('typeGrid');
-  tg.innerHTML=NC_TYPES.map((t,i)=>`<button type="button" class="nc-type-btn" style="--c:${t.c};--d:${t.d};--t:${t.t};--pbg:${t.t}" aria-pressed="false" onclick="toggleType(this,'${esc(t.label)}',${i})">${pic(i,24)}<span class="nc-label">${esc(t.label)}</span><span class="check">${ic('check',16)}</span></button>`).join('');
+  tg.innerHTML=NC_TYPES.map((t,i)=>`<button type="button" class="nc-type-btn" style="--c:${t.c};--d:${t.d};--t:${t.t};--pbg:${t.t}" aria-pressed="false" onclick="toggleType(this,${i})">${pic(i,24)}<span class="nc-label">${esc(t.label)}</span><span class="check">${ic('check',16)}</span></button>`).join('');
 
   // Gravité
   const gr=document.getElementById('gravRow');
@@ -777,8 +777,8 @@ function pickCom(el,name){
   el.classList.add('selected');el.setAttribute('aria-pressed','true');
   selCommercial=name;
 }
-function toggleType(el,label,idx){
-  label=NC_TYPES[idx].label;
+function toggleType(el,idx){
+  const label=NC_TYPES[idx].label;
   el.classList.toggle('selected');
   el.setAttribute('aria-pressed',el.classList.contains('selected'));
   if(el.classList.contains('selected')){if(!selTypes.includes(label))selTypes.push(label)}
