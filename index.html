@@ -4,21 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>NC PAO — LuxVisual</title>
+<link rel="canonical" href="https://nc-pao.enweb.app">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-/* ═══ TOKENS — NC PAO (bleu / teal / vert — architecture NC Print) ═══ */
+/* ═══ TOKENS — NC PAO (vert dominant → dégradé bleu — architecture NC Print) ═══ */
 :root{
   --bg:#f6f7f9;--surface:#fff;--surface2:#f1f3f6;--line:#e3e6eb;--line2:#cdd2da;
   --text:#14181f;--text2:#4a5260;--text3:#5f6877;
-  /* Accent bleu principal */
-  --accent:#0066cc;--accent-hover:#0052a3;--accent-soft:#e8f1fa;
+  /* Accent vert principal */
+  --accent:#1a8c5b;--accent-hover:#15724a;--accent-soft:#e4f5ec;
   /* Teal secondaire */
   --teal:#0f8b8d;--teal-dark:#07515b;--teal-soft:#e1f3f3;
-  /* Vert tertiaire */
-  --green:#1e9e6a;--green-soft:#e4f5ec;--green-dark:#14663f;
+  /* Bleu tertiaire */
+  --blue:#0066cc;--blue-soft:#e8f1fa;--blue-dark:#0a2b5c;
   --bar:#b5dcdc;
   /* Sémantique */
   --danger:#b3261e;--danger-soft:#fbeceb;--success:#1e7a46;
@@ -41,7 +42,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* ═══ LOGIN ═══ */
 .login-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
 .login-brand{display:flex;flex-direction:column;align-items:center;margin-bottom:32px}
-.logo{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:500;font-size:16px;color:#fff;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,70,140,.25)}
+.logo{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--blue));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:500;font-size:16px;color:#fff;margin-bottom:12px;box-shadow:0 4px 12px rgba(26,140,91,.25)}
 .login-brand h1{font-size:20px;font-weight:600}.login-brand p{color:var(--text2);font-size:14px;margin-top:4px}
 .login-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;width:100%;max-width:360px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .login-box h2{font-size:14px;font-weight:500;margin-bottom:16px;color:var(--text2);text-align:center}
@@ -60,11 +61,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* ═══ APP SHELL ═══ */
 .app{display:none}.app.visible{display:block}
-/* Topbar — gradient bleu→teal→vert */
+/* Topbar — gradient vert→teal→bleu */
 .topbar{background:var(--surface);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;position:relative}
-.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--teal) 55%,var(--green))}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--teal) 55%,var(--blue))}
 .topbar-left{display:flex;align-items:center;gap:10px}
-.topbar-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:500;font-size:11px;color:#fff}
+.topbar-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--blue));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:500;font-size:11px;color:#fff}
 .topbar h1{font-size:15px;font-weight:600}
 .topbar-right{display:flex;align-items:center;gap:10px}
 .user-pill{display:flex;align-items:center;gap:6px;background:var(--accent);border:none;border-radius:20px;padding:4px 12px 4px 4px;font-size:13px;font-weight:500;color:#fff}
@@ -76,22 +77,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .stats-bar{display:flex;align-items:center;gap:6px;padding:7px 20px;background:var(--surface);border-bottom:1px solid var(--line);overflow-x:auto;font-family:var(--mono);font-size:12px;color:var(--text2)}
 .stat-chip{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-weight:500;letter-spacing:-.01em}
 .stat-chip .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.stat-chip .dot-month{background:var(--accent)}.stat-chip .dot-count{background:var(--teal)}.stat-chip .dot-time{background:var(--green)}
+.stat-chip .dot-month{background:var(--accent)}.stat-chip .dot-count{background:var(--teal)}.stat-chip .dot-time{background:var(--blue)}
 .stats-sep{color:var(--line);font-size:11px;user-select:none}
 
 /* Nav — gradient active tab (button role=tab like Print) */
 .nav-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--line);padding:6px 20px;overflow-x:auto;gap:4px}
 .nav-tab{background:none;border:0;border-radius:var(--r-md);font-family:var(--font);min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:14px;color:var(--text2);cursor:pointer;transition:color .15s var(--ease),background-color .15s var(--ease);white-space:nowrap}
 .nav-tab:hover{color:var(--text);background:var(--surface2)}
-.nav-tab.active,.nav-tab.active:hover{background:linear-gradient(135deg,var(--accent),#0a7f9a);color:#fff;font-weight:500;box-shadow:0 1px 2px rgba(10,43,92,.2)}
+.nav-tab.active,.nav-tab.active:hover{background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-weight:500;box-shadow:0 1px 2px rgba(10,60,40,.2)}
 
 .content{padding:20px;max-width:900px;margin:0 auto}.view{display:none}.view.active{display:block}
 
 /* ═══ FCARD SYSTEM (Print architecture) ═══ */
 .fform{counter-reset:fc}
 .fcard{counter-increment:fc;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:16px;overflow:hidden}
-.fcard>.fh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,var(--accent-soft),var(--teal-soft));border-bottom:1px solid var(--line);font-size:14px;font-weight:500;color:var(--teal-dark);flex-wrap:wrap}
-.fcard>.fh::before{content:counter(fc);flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-family:var(--mono);font-size:12px;font-weight:500}
+.fcard>.fh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,var(--accent-soft),var(--teal-soft));border-bottom:1px solid var(--line);font-size:14px;font-weight:500;color:var(--accent-hover);flex-wrap:wrap}
+.fcard>.fh::before{content:counter(fc);flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-family:var(--mono);font-size:12px;font-weight:500;box-shadow:0 1px 3px rgba(26,140,91,.25)}
 .fcard>.fh .hint{font-weight:400;color:var(--text3);font-size:12px}
 .fh-opt{margin-left:auto;font-size:11px;font-weight:400;color:var(--text3);letter-spacing:.02em}
 .fcard>.fb{padding:16px}
@@ -104,10 +105,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;
   font-family:var(--mono);font-size:15px;font-weight:500;color:#fff;
   border-radius:var(--r-md);padding:10px 14px;margin-bottom:20px;overflow:hidden;
-  background:linear-gradient(135deg,#0a4fa8 0%,#0066cc 38%,#0f8b8d 100%);
+  background:linear-gradient(135deg,#14663f 0%,#1a8c5b 38%,#0f8b8d 100%);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='44'%3E%3Ccircle cx='310' cy='22' r='28' fill='%23ffffff' opacity='.04'/%3E%3Ccircle cx='310' cy='22' r='16' fill='%23ffffff' opacity='.04'/%3E%3Ccircle cx='30' cy='22' r='36' fill='%23ffffff' opacity='.03'/%3E%3C!-- crop marks --%3E%3Cline x1='4' y1='0' x2='4' y2='8' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='0' y1='4' x2='8' y2='4' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='336' y1='0' x2='336' y2='8' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='332' y1='4' x2='340' y2='4' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='4' y1='36' x2='4' y2='44' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='0' y1='40' x2='8' y2='40' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='336' y1='36' x2='336' y2='44' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3Cline x1='332' y1='40' x2='340' y2='40' stroke='%23fff' opacity='.25' stroke-width='.8'/%3E%3C/svg%3E"),
-    linear-gradient(135deg,#0a4fa8 0%,#0066cc 38%,#0f8b8d 100%);
+    linear-gradient(135deg,#14663f 0%,#1a8c5b 38%,#0f8b8d 100%);
   background-size:100% 100%,100% 100%
 }
 .ref-banner .date-sub{font-size:12px;color:rgba(255,255,255,.75);font-weight:400;font-family:var(--font);white-space:nowrap}
@@ -274,7 +275,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* ═══ STATS — KPI Row + chartBlock (Print fcard architecture) ═══ */
 .stats-month{display:block;font-size:17px;font-weight:500;margin-bottom:16px;color:var(--text)}
 .kpi-row{display:flex;gap:32px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.kpi:nth-child(1) .kpi-v{color:var(--accent)}.kpi:nth-child(2) .kpi-v{color:var(--teal)}.kpi:nth-child(3) .kpi-v{color:var(--green)}
+.kpi:nth-child(1) .kpi-v{color:var(--accent)}.kpi:nth-child(2) .kpi-v{color:var(--teal)}.kpi:nth-child(3) .kpi-v{color:var(--blue)}
 .kpi-v{font-size:32px;font-weight:500;line-height:1.1;letter-spacing:-.02em}
 .kpi-l{font-size:12px;color:var(--text3);margin-top:4px}
 
@@ -457,16 +458,14 @@ path.sl.on{stroke-width:34}
 
 
       <section class="fcard"><div class="fh"><span>Gravité</span></div><div class="fb">
-        <div class="section-label"><span data-ic="alert" data-s="14"></span>Niveau de gravité</div>
         <div class="radio-row" id="gravRow"></div>
       </div></section>
 
-      <section class="fcard"><div class="fh"><span>Action de l'opérateur</span></div><div class="fb">
-        <div class="section-label"><span data-ic="tool" data-s="14"></span>Action menée</div>
+      <section class="fcard"><div class="fh"><span>Action menée par le pôle PAO</span></div><div class="fb">
         <div class="radio-row" id="actRow"></div>
       </div></section>
 
-      <section class="fcard"><div class="fh"><span>Temps perdu</span></div><div class="fb">
+      <section class="fcard"><div class="fh"><span>Temps perdu</span><span class="fh-opt">facultatif</span></div><div class="fb">
         <div class="time-row">
           <button type="button" class="time-btn" onclick="pickTime(5)">5 min</button>
           <button type="button" class="time-btn" onclick="pickTime(10)">10 min</button>
@@ -640,21 +639,21 @@ try{
   pwdCollection.get().then(snap=>{snap.forEach(doc=>{operatorPasswords[doc.id]=doc.data().pass})}).catch(()=>{});
 }catch(e){console.warn('Firebase unavailable:',e.message)}
 
-const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos','Renaud Bigonville','Audrey Jourdan','Olivier Plumet','Thibaut Wery','Marina Daddato'];
+const COMMERCIAUX=['Antoine Dupraz','Nicolas Haussmann','Christophe Dos Santos','Renaud Bigonville','Audrey Jourdan','Olivier Plumet','Thibeaut Wery','Marina Daddato'];
 
-/* NC_TYPES — c/d/t colour triplets */
+/* NC_TYPES — c/d/t colour triplets — spectre large, vives, très distinctes */
 const NC_TYPES=[
-  {label:"Manque d'info",         c:'#10489e',d:'#0a2b5c',t:'#e7eef9'},
-  {label:"Information non claire", c:'#136cc3',d:'#0a345c',t:'#e7f0f9'},
-  {label:"Incohérence matière demandée",c:'#0f7fba',d:'#084a6b',t:'#e3f1f9'},
-  {label:"Pas de fond perdu",     c:'#0a8fa0',d:'#06525c',t:'#e1f3f5'},
-  {label:"Typo non vectorisée",   c:'#0f8b8d',d:'#07515b',t:'#e1f3f3'},
-  {label:"Job non rentré sur plateforme BAT",c:'#0e8a76',d:'#065347',t:'#e1f4ef'},
-  {label:"Délai",                 c:'#13915e',d:'#0a5c35',t:'#e4f5ec'},
-  {label:"Manque fichiers",       c:'#1a9e5a',d:'#0e5c30',t:'#e5f6ec'},
-  {label:"Format incorrect",      c:'#1daa50',d:'#0f6a2e',t:'#e6f7ec'},
-  {label:"Fichier pixellisé",     c:'#13b357',d:'#0a6a2d',t:'#e4f8ea'},
-  {label:"Autre",                 c:'#13c35e',d:'#0a5c2d',t:'#e7f9ee'}
+  {label:"Manque d'info",         c:'#2563eb',d:'#1e3a8a',t:'#dbeafe'},
+  {label:"Information non claire", c:'#7c3aed',d:'#4c1d95',t:'#ede9fe'},
+  {label:"Incohérence matière demandée",c:'#db2777',d:'#831843',t:'#fce7f3'},
+  {label:"Pas de fond perdu",     c:'#dc2626',d:'#7f1d1d',t:'#fee2e2'},
+  {label:"Typo non vectorisée",   c:'#ea580c',d:'#7c2d12',t:'#fff7ed'},
+  {label:"Job non rentré sur plateforme BAT",c:'#d97706',d:'#78350f',t:'#fef3c7'},
+  {label:"Délai",                 c:'#65a30d',d:'#365314',t:'#ecfccb'},
+  {label:"Manque fichiers",       c:'#059669',d:'#064e3b',t:'#d1fae5'},
+  {label:"Format incorrect",      c:'#0891b2',d:'#164e63',t:'#cffafe'},
+  {label:"Fichier pixellisé",     c:'#6366f1',d:'#312e81',t:'#e0e7ff'},
+  {label:"Autre",                 c:'#78716c',d:'#44403c',t:'#f5f5f4'}
 ];
 
 const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -692,7 +691,7 @@ function initCombo(input,getList){
     else if(e.key==='Enter'&&hlIdx>=0){e.preventDefault();pick(items[hlIdx])}
     else if(e.key==='Escape'){wrap.classList.remove('open');input.setAttribute('aria-expanded','false')}
   });
-  const toggle=wrap.querySelector('.combo-toggle');
+  const toggle=wrap.querySelector('.combo-toggle')||wrap.querySelector('.combo-btn');
   if(toggle)toggle.addEventListener('click',()=>{wrap.classList.contains('open')?(wrap.classList.remove('open'),input.setAttribute('aria-expanded','false')):input.focus()});
 }
 
@@ -958,7 +957,7 @@ function editNC(id){
     <div class="edit-field"><label>Type(s) de NC</label><div class="edit-types-grid">${NC_TYPES.map(t=>`<button type="button" class="edit-type-chip${editTypes.includes(t.label)?' sel':''}" onclick="toggleEditType(this,'${esc(t.label)}')">${esc(t.label)}</button>`).join('')}</div></div>
     <div class="edit-field"><label>Matière / support</label><div class="combo"><input type="text" id="e-mat" role="combobox" aria-expanded="false" autocomplete="off" value="${esc(n.matiere||'')}"><button type="button" class="combo-btn" tabindex="-1" aria-label="Afficher la liste">${ic('chevron',18)}</button><ul class="combo-list" role="listbox"></ul></div></div>
     <div class="edit-field"><label>Gravité</label><select id="e-sev">${opt(GRAVITES,n.gravite)}</select></div>
-    <div class="edit-field"><label>Action de l'opérateur</label><select id="e-act">${opt(ACTIONS,n.action)}</select></div>
+    <div class="edit-field"><label>Action menée par le pôle PAO</label><select id="e-act">${opt(ACTIONS,n.action)}</select></div>
     <div class="edit-field"><label>Temps perdu (min)</label><input type="number" id="e-time" min="0" value="${n.timeLost||0}"></div>
     <div class="edit-field"><label>Remarque</label><textarea id="e-remark">${esc(n.remark)}</textarea></div>`;
   initCombo(document.getElementById('e-client'),clients);initCombo(document.getElementById('e-mat'),()=>MATIERES);
@@ -1072,7 +1071,7 @@ function renderStats(){
     <section class="fcard"><div class="fh">Synthèse du mois</div><div class="fb"><div class="kpi-row">
       <div class="kpi"><div class="kpi-v" style="color:var(--accent)">${total}</div><div class="kpi-l">non-conformités</div></div>
       <div class="kpi"><div class="kpi-v" style="color:var(--teal)">${fmtMin(totalMin)}</div><div class="kpi-l">temps perdu</div></div>
-      <div class="kpi"><div class="kpi-v" style="color:var(--green)">${Math.round(totalMin/total)} min</div><div class="kpi-l">par NC</div></div>
+      <div class="kpi"><div class="kpi-v" style="color:var(--blue)">${Math.round(totalMin/total)} min</div><div class="kpi-l">par NC</div></div>
     </div></div></section>
     ${chartBlock('types','Par type de NC',typeEntries,null,String(typeTotal))}
     ${chartBlock('com','Par commercial',comEntries,null,String(total))}
@@ -1345,7 +1344,7 @@ function buildRapportHTML(){
   const semStr  = `${monday.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit'})} – ${sunday.toLocaleDateString('fr-LU',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
 
   // Palette email : graphite + accent vert
-  const INK='#14181f', INK2='#4a5260', INK3='#6b7482', LINE='#e3e6eb', SOFT='#f1f3f6', ACC='#0066cc', BAR='#b5dcdc', TEAL='#0f8b8d', GREEN='#1e9e6a';
+  const INK='#14181f', INK2='#4a5260', INK3='#6b7482', LINE='#e3e6eb', SOFT='#f1f3f6', ACC='#1a8c5b', BAR='#b5dcdc', TEAL='#0f8b8d', BLUE='#0066cc';
 
   function barChart(entries, total, title, colorFor){
     if(!entries.length) return '';
@@ -1427,10 +1426,10 @@ function buildRapportHTML(){
   return `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:700px;margin:0 auto;background:#ffffff;color:${INK}">
 
-  <div style="background:#0a2b5c;padding:24px 32px;color:#ffffff">
-    <div style="font-size:12px;color:#a8c8e8;margin-bottom:8px">LuxVisual · Pôle PAO</div>
+  <div style="background:#14663f;padding:24px 32px;color:#ffffff">
+    <div style="font-size:12px;color:#a8e8c8;margin-bottom:8px">LuxVisual · Pôle PAO</div>
     <div style="font-size:22px;font-weight:bold;margin-bottom:4px">Rapport NC-PAO</div>
-    <div style="font-size:13px;color:#c0daf0">Semaine du ${semStr} · généré le ${dateStr}</div>
+    <div style="font-size:13px;color:#c0f0da">Semaine du ${semStr} · généré le ${dateStr}</div>
   </div>
 
   <div style="height:4px;background:${ACC};line-height:4px;font-size:0">&nbsp;</div>
@@ -1439,7 +1438,7 @@ function buildRapportHTML(){
       ${kpi(totalSem,'NC cette semaine',false,ACC)}
       ${kpi(fmtMin(tempsSem),'temps perdu cette semaine',false,TEAL)}
       ${kpi(totalMois,'NC en '+MONTHS_FR[now.getMonth()].toLowerCase(),false,ACC)}
-      ${kpi(fmtMin(tempsMois),'temps perdu ce mois',true,GREEN)}
+      ${kpi(fmtMin(tempsMois),'temps perdu ce mois',true,TEAL)}
     </tr>
   </table>
 
