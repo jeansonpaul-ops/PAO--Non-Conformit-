@@ -90,8 +90,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* ═══ FCARD SYSTEM (Print architecture) ═══ */
 .fform{counter-reset:fc}
-.fcard{counter-increment:fc;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:16px;overflow:hidden}
-.fcard>.fh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,var(--accent-soft),var(--teal-soft));border-bottom:1px solid var(--line);font-size:14px;font-weight:500;color:var(--accent-hover);flex-wrap:wrap}
+.fcard{counter-increment:fc;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:16px}
+.fcard>.fh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg,var(--accent-soft),var(--teal-soft));border-bottom:1px solid var(--line);font-size:14px;font-weight:500;color:var(--accent-hover);flex-wrap:wrap;border-radius:var(--r-lg) var(--r-lg) 0 0}
 .fcard>.fh::before{content:counter(fc);flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-family:var(--mono);font-size:12px;font-weight:500;box-shadow:0 1px 3px rgba(26,140,91,.25)}
 .fcard>.fh .hint{font-weight:400;color:var(--text3);font-size:12px}
 .fh-opt{margin-left:auto;font-size:11px;font-weight:400;color:var(--text3);letter-spacing:.02em}
@@ -129,8 +129,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .combo-toggle:hover,.combo-btn:hover{background:var(--surface2)}
 .combo-toggle .ic,.combo-btn .ic{transition:transform .15s var(--ease)}
 .combo.open .combo-toggle .ic,.combo.open .combo-btn .ic{transform:rotate(180deg)}
-.combo-list{display:none;position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);max-height:240px;overflow-y:auto;background:var(--surface);border:1px solid var(--line2);border-radius:var(--r-md);box-shadow:0 8px 24px rgba(10,43,92,.14);padding:4px;list-style:none;margin:0}
+.combo-list{display:none;position:absolute;z-index:50;left:0;right:0;top:calc(100% + 4px);max-height:240px;overflow-y:auto;background:var(--surface);border:1px solid var(--line2);border-radius:var(--r-md);box-shadow:0 8px 24px rgba(10,43,92,.14);padding:4px;list-style:none;margin:0}
 .combo.open .combo-list{display:block}
+.combo.open{z-index:10;position:relative}
 .combo-list li{padding:8px 12px;min-height:40px;display:flex;align-items:center;border-radius:var(--r-sm);cursor:pointer;font-size:14px;color:var(--text)}
 .combo-list li.act,.combo-list li:hover{background:var(--accent-soft);color:var(--accent)}
 .combo-list li mark{background:none;color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:2px}
@@ -680,11 +681,11 @@ function initCombo(input,getList){
     hlIdx=-1;
     list.innerHTML=items.map((v,i)=>`<li role="option" data-i="${i}">${mark(v,q)}</li>`).join('');
     wrap.classList.add('open');input.setAttribute('aria-expanded','true');
-    list.querySelectorAll('li[role="option"]').forEach((li,i)=>{li.onmousedown=e=>{e.preventDefault();pick(items[i])};li.onmouseenter=()=>{hlIdx=i;updHL()}})
+    list.querySelectorAll('li[role="option"]').forEach((li,i)=>{li.onpointerdown=e=>{e.preventDefault();pick(items[i])};li.onmouseenter=()=>{hlIdx=i;updHL()}})
   }
   function updHL(){list.querySelectorAll('li[role="option"]').forEach((li,i)=>{li.classList.toggle('act',i===hlIdx);if(i===hlIdx)li.scrollIntoView({block:'nearest'})})}
   input.addEventListener('focus',show);input.addEventListener('input',show);
-  input.addEventListener('blur',()=>setTimeout(()=>{wrap.classList.remove('open');input.setAttribute('aria-expanded','false')},150));
+  input.addEventListener('blur',()=>setTimeout(()=>{wrap.classList.remove('open');input.setAttribute('aria-expanded','false')},300));
   input.addEventListener('keydown',e=>{const opts=list.querySelectorAll('li[role="option"]');if(!opts.length)return;
     if(e.key==='ArrowDown'){e.preventDefault();hlIdx=Math.min(hlIdx+1,opts.length-1);updHL()}
     else if(e.key==='ArrowUp'){e.preventDefault();hlIdx=Math.max(hlIdx-1,0);updHL()}
